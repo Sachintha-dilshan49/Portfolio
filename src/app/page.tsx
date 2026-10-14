@@ -6,12 +6,8 @@ import { ProjectCard } from "@/components/project-card";
 import { Shell } from "@/components/shell";
 import { Prompt } from "@/components/terminal";
 import { achievements } from "@/content/achievements";
-import { profile } from "@/content/profile";
 import { projectLinks, projects } from "@/content/projects";
 import { shell } from "@/content/shell";
-
-const btn =
-  "inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg px-3 text-center text-[clamp(13px,3.8vw,15px)] no-underline transition-colors sm:px-5";
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
@@ -63,15 +59,6 @@ export default function Home() {
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="flex flex-wrap items-center justify-between gap-6 border-t border-line py-14">
-        <h2 className="m-0 max-w-[640px] font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-bold leading-tight">
-          Hiring a backend / DevOps intern for {profile.availability.split(" ")[1]}?
-        </h2>
-        <Link href="/contact" className={`${btn} bg-accent font-semibold text-accent-fg`}>
-          ./contact.sh
-        </Link>
       </section>
     </>
   );

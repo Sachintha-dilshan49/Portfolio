@@ -50,7 +50,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main id="main">{children}</main>
           <footer className="mt-10 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-line pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] text-[13px] text-muted">
             <span>© {profile.name}</span>
-            <span>built with Next.js · deployed on Vercel</span>
           </footer>
         </div>
       </body>
