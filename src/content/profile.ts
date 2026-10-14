@@ -1,3 +1,5 @@
+import { todo, type Text } from "./case-study";
+
 export const profile = {
   name: "Sachintha Dilshan",
   fullName: "N.L. Sachintha Dilshan",
@@ -51,15 +53,55 @@ export const neofetch: FetchLine[] = [
   { key: "Status", value: "● open to work · Jan 2027 · remote OK", tone: "ok" },
 ];
 
-export const skills: { group: string; items: string }[] = [
-  { group: "languages", items: "Java · Python · TypeScript · JavaScript · SQL · C" },
-  { group: "backend", items: "Spring Boot · FastAPI · Express · REST · JWT · RBAC" },
-  { group: "data", items: "PostgreSQL · Redis · SQLite · ChromaDB · Prisma · SQLAlchemy" },
-  { group: "ai-ml", items: "RAG · LightGBM · XGBoost · Sentence Transformers · LLM APIs" },
-  { group: "devops", items: "Docker · GitHub Actions · Flyway · Prometheus · Micrometer" },
+/** About page (src/app/about/page.tsx). */
+export const about = {
+  heading: "I like systems that explain themselves when they break.",
+  bio: [
+    "I’m a third-year IT undergraduate at the University of Moratuwa, reading for a BSc (Hons) in Information Technology. Most of what I build lives behind the UI: APIs, access control, background processing, and the infrastructure that keeps them dependable.",
+    "I care most about software that stays reliable under failure, with clear architecture and measurable behaviour. I work mainly with Java, Python and TypeScript, and reach for Spring Boot, FastAPI, Next.js, PostgreSQL and Docker.",
+    "Outside code I’m the IT & Media Coordinator for the University of Moratuwa Dancing Society, which is where my interest in motion and timing comes from.",
+  ],
+};
+
+export type Education = { qualification: string; institution: string; period: string; details: string[] };
+
+export const education: Education[] = [
+  {
+    qualification: "BSc (Hons) Information Technology",
+    institution: "University of Moratuwa",
+    period: "2024 – 2028 (expected)",
+    details: ["CGPA 3.59 / 4.00"],
+  },
+  {
+    qualification: "G.C.E. Advanced Level",
+    institution: "Rahula College, Matara",
+    period: "2023",
+    details: ["Physical Science stream", "Z-score 2.065"],
+  },
 ];
 
-export const certifications = [
-  { name: "AWS Cloud Practitioner Essentials", issuer: "Amazon Web Services" },
-  { name: "Introduction to DevOps and SRE (LFS162)", issuer: "The Linux Foundation" },
+/** `group` is the shell's short name (`stack` command); `title` is shown on About. */
+export const skills: { group: string; title: string; items: string[] }[] = [
+  { group: "languages", title: "Languages", items: ["Java", "Python", "TypeScript", "JavaScript", "SQL", "C"] },
+  { group: "backend", title: "Backend", items: ["Spring Boot", "FastAPI", "Express", "REST", "JWT", "RBAC"] },
+  { group: "data", title: "Databases", items: ["PostgreSQL", "Redis", "SQLite", "ChromaDB", "Prisma", "SQLAlchemy"] },
+  { group: "ai-ml", title: "AI/ML", items: ["RAG", "LightGBM", "XGBoost", "Sentence Transformers", "LLM APIs"] },
+  { group: "devops", title: "DevOps & Tools", items: ["Docker", "GitHub Actions", "Flyway", "Prometheus", "Micrometer"] },
+];
+
+export type Certification = { name: string; issuer: string; year: Text; credential: Text };
+
+export const certifications: Certification[] = [
+  {
+    name: "AWS Cloud Practitioner Essentials",
+    issuer: "Amazon Web Services",
+    year: todo("year"),
+    credential: todo("credential link"),
+  },
+  {
+    name: "Introduction to DevOps and Site Reliability Engineering (LFS162)",
+    issuer: "The Linux Foundation",
+    year: todo("year"),
+    credential: todo("credential link"),
+  },
 ];

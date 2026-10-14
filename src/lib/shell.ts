@@ -57,7 +57,7 @@ const commands: Record<string, (projects: ProjectLink[]) => ShellResult> = {
   }),
 
   stack: () => ({
-    lines: skills.map((s): Line => [t(`${s.group}: `, "accent"), t(s.items)]),
+    lines: skills.map((s): Line => [t(`${s.group}: `, "accent"), t(s.items.join(" · "))]),
   }),
 
   contact: () => ({
