@@ -3,6 +3,7 @@ import { hero, profile } from "../src/content/profile";
 import { projects } from "../src/content/projects";
 import { shell } from "../src/content/shell";
 import { palette } from "../src/content/site";
+import { waitForHydration } from "./hydration";
 import { findOverflow } from "./overflow";
 
 const output = (page: Page) => page.getByLabel(shell.outputLabel);
@@ -106,6 +107,7 @@ test.describe("interactive shell", () => {
 test.describe("command palette", () => {
   test("Ctrl+K opens it and Enter navigates to a project", async ({ page }) => {
     await page.goto("/about");
+    await waitForHydration(page);
     await page.keyboard.press("Control+k");
     await expect(dialog(page)).toBeVisible();
     await expect(page.getByRole("combobox")).toBeFocused();
@@ -142,6 +144,7 @@ test.describe("command palette", () => {
   test("Toggle theme action", async ({ page }) => {
     await page.goto("/");
     const before = await page.evaluate(() => document.documentElement.dataset.theme);
+    await waitForHydration(page);
     await page.keyboard.press("Control+k");
     await page.keyboard.type("theme");
     await page.keyboard.press("Enter");

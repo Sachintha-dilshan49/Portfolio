@@ -29,10 +29,16 @@ test.describe("home hero", () => {
   });
 
   test("first visit: plays the login sequence once (~2s), then holds the final state", async ({ page }) => {
+    // Paused fake clock: a slow page load can't let the sequence finish before we look.
+    // (An installed clock keeps running in real time until it is paused.)
+    await page.clock.install({ time: new Date("2026-10-15T09:00:00") });
+    await page.clock.pauseAt(new Date("2026-10-15T09:00:01"));
     await page.goto("/");
+    await page.clock.runFor(500);
     expect(await introState(page)).toBeNull();
     expect(await name(page).evaluate((el) => getComputedStyle(el).animationName)).toBe("intro-fade");
-    await expect.poll(() => introState(page), { timeout: 4000 }).toBe("done");
+    await page.clock.runFor(2500);
+    expect(await introState(page)).toBe("done");
     expect(await allShown(page)).toBe(true);
     await expect(page.getByText(`Last login: ${await page.evaluate(() => new Date().toDateString())} on ${hero.tty}`)).toBeVisible();
   });

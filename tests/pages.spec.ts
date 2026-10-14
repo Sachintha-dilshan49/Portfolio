@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { achievements, extraCurricular } from "../src/content/achievements";
 import { certifications, education, skills } from "../src/content/profile";
 import { palette } from "../src/content/site";
+import { waitForHydration } from "./hydration";
 import { findOverflow } from "./overflow";
 
 const withPhotos = achievements.filter((a) => a.photos.length > 0);
@@ -83,6 +84,7 @@ test.describe("achievements page", () => {
 
     expect(await (await request.get("/sitemap.xml")).text()).toContain("/achievements</loc>");
 
+    await waitForHydration(page);
     await page.keyboard.press("Control+k");
     await page.keyboard.type("achiev");
     await expect(page.getByRole("option").first()).toContainText("Achievements");
