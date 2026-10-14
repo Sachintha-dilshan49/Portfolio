@@ -305,7 +305,7 @@ export const projects: Project[] = [
   },
   {
     slug: "aaac",
-    name: "AAAC",
+    name: "AAAC – Access-Aware Admission Control",
     summary:
       "Fairness-aware virtual waiting room that adapts admission windows and page payloads to each client's link quality.",
     team: "Team",
@@ -324,7 +324,7 @@ export const projects: Project[] = [
     ],
     caseStudy: {
       overview: [
-        "AAAC (Access-Aware Admission Control) is a virtual waiting room that stays fair to users on slow connections.",
+        "AAAC is a virtual waiting room that stays fair to users on slow connections.",
         "Conventional waiting rooms give every user the same admission window and the same page. Users on slow, lossy links time out, go to the back of the queue and retry at the same cost, so they are systematically excluded. AAAC adapts the queue to each client's link to close that gap.",
         "The key metric is the completion gap: Δ = completion rate of HIGH-bandwidth clients − completion rate of LOW-bandwidth clients.",
       ],
@@ -705,7 +705,7 @@ export const projects: Project[] = [
   },
   {
     slug: "rahula-dancing-society",
-    name: "Rahula Dancing Portal",
+    name: "Rahula Dancing Society Platform – Learning Portal",
     summary:
       "Learning portal for students, marks, quizzes and study resources with Admin, Teacher and Student roles.",
     team: "solo",
@@ -731,7 +731,7 @@ export const projects: Project[] = [
         diagram: {
           width: 780,
           height: 392,
-          title: "Rahula Dancing Society architecture",
+          title: "Rahula Dancing Society Platform architecture",
           description:
             "A Next.js frontend with public, auth and portal route groups calls an Express API over REST with JWT bearer tokens. The API is layered route, controller, service, with authenticate and authorize middleware and pure utils for quiz scoring and access rules. It stores data in PostgreSQL through Prisma, saves uploads to a local uploads folder, and sends welcome and password-reset email through a Google Apps Script proxy.",
           nodes: [
@@ -818,7 +818,7 @@ export const projects: Project[] = [
   },
   {
     slug: "material-selection-assistant",
-    name: "Material Selection Assistant",
+    name: "Mechanical Engineering Material Selection Assistant",
     summary:
       "RAG assistant that recommends engineering materials from plain-English operating conditions.",
     team: "solo",
@@ -845,7 +845,7 @@ export const projects: Project[] = [
         diagram: {
           width: 780,
           height: 392,
-          title: "Material Selection Assistant architecture",
+          title: "Mechanical Engineering Material Selection Assistant architecture",
           description:
             "The Streamlit UI sends a plain-English query to the reason.py orchestrator. It first checks whether this is a material question without an API call, then turns the query into filters with a fast LLM, retrieves 18 class-diverse candidates from ChromaDB, has a smarter LLM select and rank them, and looks up allowable stress at temperature in SQLite. llm.py handles every LLM call with failover between Groq, Gemini and OpenAI, quota cooldowns and a cache. SQLite is the source of truth; ChromaDB is rebuilt from it.",
           nodes: [

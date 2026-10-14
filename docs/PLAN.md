@@ -59,11 +59,11 @@ CLAUDE.md              rules for Claude Code (imports AGENTS.md)
 - [x] Architecture diagrams as SVG that fade in on scroll (both themes, reduced motion)
 - [x] Case study: Distributed Job Queue
 - [x] Case study: Waypoint Logistics
-- [x] Case study: AAAC
+- [x] Case study: AAAC – Access-Aware Admission Control
 - [x] Case study: CoreHR
 - [x] Case study: Sentrio
-- [x] Case study: Rahula Dancing Portal
-- [x] Case study: Material Selection Assistant
+- [x] Case study: Rahula Dancing Society Platform – Learning Portal
+- [x] Case study: Mechanical Engineering Material Selection Assistant
 - [x] Fill in own role for each project (verified from each repo's git history)
 
 No interactive demos in phase 2 — see *Later / optional*.
