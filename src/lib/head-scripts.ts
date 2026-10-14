@@ -17,3 +17,6 @@ export const themeScript = `(function(){try{var t=localStorage.getItem("theme");
 export const INTRO_KEY = "intro-played";
 
 export const introScript = `(function(){var d=document.documentElement;function done(){d.setAttribute("data-intro","done");removeEventListener("pointerdown",done,true);removeEventListener("keydown",done,true)}try{if(sessionStorage.getItem("${INTRO_KEY}"))return done()}catch(e){}addEventListener("pointerdown",done,true);addEventListener("keydown",done,true)})()`;
+
+/** Marks <html data-js> so CSS can tell JavaScript is running (e.g. the phone nav collapses only then). */
+export const jsScript = `document.documentElement.setAttribute("data-js","")`;
