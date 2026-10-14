@@ -106,15 +106,17 @@ body {
 }
 
 /*
- * Phone nav (components/nav.tsx): below md the links hide behind the menu
- * button — but only when JavaScript is running (<html data-js>, set in <head>
- * before paint), so no-JS visitors keep the links and never see a dead button.
+ * Phone nav (components/nav.tsx): on touch phones (coarse pointer, below md)
+ * the links hide behind the menu button. A PC with a mouse always shows the
+ * links, however narrow the window. It also needs JavaScript (<html data-js>,
+ * set in <head> before paint), so no-JS visitors keep the links and never see
+ * a dead button.
  */
 .nav-toggle {
   display: none;
 }
 
-@media (width < 48rem) {
+@media (width < 48rem) and (pointer: coarse) {
   [data-js] .nav-toggle {
     display: inline-flex;
   }

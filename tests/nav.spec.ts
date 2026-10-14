@@ -67,6 +67,18 @@ test.describe("phone nav", () => {
   });
 });
 
+for (const width of [375, 600]) {
+  test.describe(`PC with a mouse, ${width}px-wide window`, () => {
+    test.use({ viewport: { width, height: 800 }, hasTouch: false, isMobile: false });
+    test("links always visible, no menu button", async ({ page }) => {
+      await page.goto("/");
+      await waitForHydration(page);
+      for (const name of ["./projects", "./achievements", "./about", "./contact"]) await expect(navLink(page, name)).toBeVisible();
+      await expect(toggle(page)).toBeHidden();
+    });
+  });
+}
+
 test.describe("tablet and desktop", () => {
   test.use({ viewport: { width: 768, height: 1024 } });
   test("links always visible, no menu button", async ({ page }) => {

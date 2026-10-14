@@ -11,12 +11,13 @@ import { ThemeToggle } from "./theme-toggle";
 const links = pages.filter((p) => p.href !== "/");
 
 /**
- * Phones: brand + ⌘K + theme toggle + menu button on one row; the menu button
- * shows the four links as a 2×2 grid of 44px buttons underneath (one row of
- * four from sm). md and up: everything on one line, no menu button.
+ * Touch phones: brand + ⌘K + theme toggle + menu button on one row; the menu
+ * button shows the four links as a 2×2 grid of 44px buttons underneath (one
+ * row of four from sm). A PC (mouse) never gets the menu button: narrow
+ * windows show the grid directly, md and up has everything on one line.
  *
- * The links only collapse once JavaScript is running (<html data-js>, set in
- * <head> before paint — see globals.css), so without JS they simply show.
+ * The links only collapse on a coarse pointer with JavaScript running
+ * (<html data-js>, set in <head> before paint — see globals.css).
  */
 export function Nav({ projects }: { projects: ProjectLink[] }) {
   const pathname = usePathname();
