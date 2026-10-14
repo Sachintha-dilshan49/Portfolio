@@ -16,7 +16,7 @@ Tick items off there as they are finished.
 - `src/content/` — ALL text and data (profile, projects, timeline). Change content here, never hard-code it in components.
 - `src/components/` — UI pieces (terminal window, neofetch, nav, theme toggle, code spotlight…)
 - `src/app/` — routes: `/`, `/projects`, `/projects/[slug]`, `/about`, `/contact`
-- `public/` — `me.jpg` (photo) and `cv.pdf` (public CV, no referee phone numbers)
+- `public/` — `me.jpg` (photo) and `cv.pdf` (public CV). public/cv.pdf may include referee details — the referees have consented.
 
 ## Rules
 - Colours come from the CSS variable tokens in `src/app/globals.css`; every change must work in BOTH themes.

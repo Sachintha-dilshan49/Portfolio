@@ -54,7 +54,7 @@ CLAUDE.md              rules for Claude Code (imports AGENTS.md)
 **Phase 2 — content & case studies**
 - [x] Add photo (`public/me.jpg`, ≤1000px, metadata stripped) — accent duotone, full colour on hover/focus
 - [x] "Download CV" links save as `Sachintha-Dilshan-CV.pdf`
-- [ ] Add public CV (`public/cv.pdf`) — blocked: current draft still has a referee's phone number
+- [x] Add public CV (`public/cv.pdf`)
 - [x] One case-study template for every project (see *Case-study template* below)
 - [x] Architecture diagrams as SVG that fade in on scroll (both themes, reduced motion)
 - [x] Case study: Distributed Job Queue — one `[TODO: …]` left (timeframe)

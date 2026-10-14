@@ -10,7 +10,7 @@ export const profile = {
   email: "nlsachinthadilshan@gmail.com",
   github: "https://github.com/Sachintha-dilshan49",
   linkedin: "https://www.linkedin.com/in/sachintha-dilshan-498a3a306",
-  // Put a public version of the CV (without referees' phone numbers) at public/cv.pdf
+  // Public CV at public/cv.pdf (may include referee details — the referees have consented)
   cvPath: "/cv.pdf",
   // Name the browser saves the CV under
   cvFileName: "Sachintha-Dilshan-CV.pdf",
