@@ -21,11 +21,11 @@ export default function AboutPage() {
 
   return (
     <div className="flex flex-col pb-10 pt-8">
-      <section className="flex flex-wrap items-start gap-10 pb-12">
-        <Photo className="h-[260px] w-full max-w-[260px] flex-none sm:h-[340px] sm:max-w-[300px]" />
-        <div className="flex min-w-0 flex-[1_1_420px] flex-col gap-5">
+      <section className="flex flex-col items-start gap-6 pb-12 md:flex-row md:gap-10">
+        <Photo className="h-[200px] w-[168px] flex-none sm:h-[300px] sm:w-[250px] md:h-[340px] md:w-[300px]" />
+        <div className="flex min-w-0 flex-1 flex-col gap-5">
           <Prompt>cat about.md</Prompt>
-          <h1 className="m-0 font-sans text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+          <h1 className="m-0 font-sans text-[clamp(2rem,8vw,3rem)] font-bold leading-tight tracking-tight">
             I like systems that explain themselves when they break.
           </h1>
           <p className="m-0 font-sans text-lg leading-relaxed text-soft">
@@ -48,7 +48,7 @@ export default function AboutPage() {
                 <span className={`mt-1.5 size-3 flex-none rounded-full ${dot[c.kind]}`} />
                 {i < timeline.length - 1 && <span className="w-0.5 flex-1 bg-line" />}
               </div>
-              <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 pb-5">
+              <div className="flex min-w-0 flex-wrap items-baseline gap-x-3.5 gap-y-1 pb-5">
                 <span className="text-[13px] text-gold">{c.hash}</span>
                 <span className="text-[13px] text-muted">{c.when}</span>
                 <span className="text-[15px]">{c.message}</span>
@@ -62,7 +62,12 @@ export default function AboutPage() {
       <section className="flex flex-wrap gap-8 border-t border-line py-10">
         <div className="flex min-w-0 flex-[1_1_420px] flex-col gap-4">
           <Prompt>tree skills/</Prompt>
-          <pre className="m-0 overflow-x-auto rounded-xl border border-line bg-surface p-5 text-sm leading-loose text-soft">
+          {/* Keeps the tree aligned: scrolls sideways inside its own box on narrow screens. */}
+          <pre
+            tabIndex={0}
+            aria-label="Skills tree"
+            className="m-0 overflow-x-auto rounded-xl border border-line bg-surface p-4 text-[13px] leading-loose text-soft sm:p-5 sm:text-sm"
+          >
             {"skills/\n" +
               skills
                 .map((s, i) => `${i === skills.length - 1 ? "└──" : "├──"} ${(s.group + "/").padEnd(width)} ${s.items}`)

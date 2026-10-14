@@ -6,7 +6,8 @@ import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { wins } from "@/content/timeline";
 
-const btn = "inline-flex min-h-12 items-center rounded-lg px-5 text-[15px] no-underline transition-colors";
+const btn =
+  "inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg px-3 text-center text-[clamp(13px,3.8vw,15px)] no-underline transition-colors sm:px-5";
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
@@ -15,7 +16,8 @@ export default function Home() {
     <>
       <section className="flex flex-col gap-5 pb-16 pt-6">
         <Neofetch />
-        <div className="flex flex-wrap gap-3">
+        {/* Two-column grid of full-width buttons on phones, a row from sm up. */}
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
           <Link href="/projects" className={`${btn} bg-accent font-semibold text-accent-fg`}>
             cd ./projects
           </Link>
@@ -34,11 +36,11 @@ export default function Home() {
       <section className="flex flex-col gap-6 border-t border-line py-12">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <Prompt>ls ~/projects --featured</Prompt>
-          <Link href="/projects" className="text-sm text-accent">
+          <Link href="/projects" className="inline-flex min-h-11 items-center text-sm text-accent">
             all {projects.length} projects →
           </Link>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))] gap-4">
           {featured.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}
@@ -47,7 +49,7 @@ export default function Home() {
 
       <section className="flex flex-col gap-6 border-t border-line py-12">
         <Prompt>cat wins.txt</Prompt>
-        <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 p-0">
+        <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4 p-0">
           {wins.map((w) => (
             <li key={w.event} className="flex flex-col gap-1.5 rounded-b-xl border-t-2 border-accent bg-surface p-5">
               <span className="font-sans text-xl font-bold">{w.place}</span>
@@ -59,7 +61,7 @@ export default function Home() {
       </section>
 
       <section className="flex flex-wrap items-center justify-between gap-6 border-t border-line py-14">
-        <h2 className="m-0 max-w-[640px] font-sans text-4xl font-bold leading-tight">
+        <h2 className="m-0 max-w-[640px] font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-bold leading-tight">
           Hiring a backend / DevOps intern for {profile.availability.split(" ")[1]}?
         </h2>
         <Link href="/contact" className={`${btn} bg-accent font-semibold text-accent-fg`}>

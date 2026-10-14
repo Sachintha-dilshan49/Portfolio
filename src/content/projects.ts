@@ -53,6 +53,14 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "Distributed Job Queue architecture",
+          narrow: {
+            order: ["client", "api", "db", "workers"],
+            edges: [
+              { from: "client", to: "api", label: ["POST /jobs"] },
+              { from: "api", to: "db", label: ["insert job (PENDING)", "reaper: expired lease →", "PENDING, or DEAD"] },
+              { from: "workers", to: "db", label: ["claim (SKIP LOCKED)", "heartbeat: extend lease", "done / retry / DEAD"] },
+            ],
+          },
           description:
             "A client sends POST /jobs to the API, which runs JobController, the Reaper, Flyway migrations and the Prometheus endpoint. N worker processes claim jobs directly from PostgreSQL with FOR UPDATE SKIP LOCKED, renew their lease with a heartbeat, and mark jobs done, retried or dead. The Reaper returns jobs with expired leases to PENDING, or DEAD once attempts are used up. PostgreSQL holds the jobs, completed_effects and fake_payments tables and is the only coordinator.",
           nodes: [
@@ -201,6 +209,16 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "Waypoint Logistics architecture",
+          narrow: {
+            order: ["web", "api", "kc", "r2", "db", "mail"],
+            edges: [
+              { from: "web", to: "api", label: ["REST"] },
+              { from: "api", to: "kc", label: ["tokens"] },
+              { from: "api", to: "r2", label: ["photos"] },
+              { from: "api", to: "db" },
+              { from: "mail", to: "db", label: ["reads email_outbox"] },
+            ],
+          },
           description:
             "A Next.js frontend with five role workspaces calls a FastAPI API over REST. The API verifies sign-in tokens with Keycloak, stores photos in Cloudflare R2, and reads and writes PostgreSQL on Neon. A separate email worker reads queued messages from the email_outbox table and sends them over SMTP.",
           nodes: [
@@ -335,6 +353,16 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "AAAC architecture",
+          narrow: {
+            order: ["admission", "clients", "delivery", "origin"],
+            edges: [
+              { from: "clients", to: "admission", label: ["join"] },
+              { from: "admission", to: "clients", label: ["admit"] },
+              { from: "clients", to: "delivery", label: ["fetch page"] },
+              { from: "delivery", to: "origin", label: ["fetch"] },
+              { from: "origin", to: "admission", label: ["origin health →", "admission rate"] },
+            ],
+          },
           description:
             "Three client containers, shaped to high, medium and low links and using the client SDK, join the queue at the admission service on port 8000, which uses Redis and holds the adaptive window, the link estimator, re-queueing and AIMD rate control. Admitted clients fetch a page sized to their link from the delivery service on port 8001, which fetches from the mock origin on port 8002. Origin health feeds back into the admission rate.",
           nodes: [
@@ -463,6 +491,15 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "CoreHR architecture",
+          narrow: {
+            order: ["web", "api", "inbox", "ai", "db"],
+            edges: [
+              { from: "web", to: "api", label: ["REST"] },
+              { from: "inbox", to: "api", label: ["IMAP poller", "Message-ID dedupe"] },
+              { from: "api", to: "ai", label: ["CVs"] },
+              { from: "api", to: "db" },
+            ],
+          },
           description:
             "A Next.js frontend, including the public job portal, calls the main FastAPI API over REST. The API handles JWT and permission-based access, employees, recruitment, documents and leave, and runs APScheduler jobs guarded by PostgreSQL advisory locks. It stores data in PostgreSQL through SQLAlchemy and Alembic, sends CVs to a separate AI screening service, and an IMAP poller pulls inbound HR requests from an external inbox, de-duplicated by Message-ID.",
           nodes: [
@@ -609,6 +646,16 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "Sentrio architecture",
+          narrow: {
+            order: ["l1", "worker", "llm", "evidence", "trust", "ui"],
+            edges: [
+              { from: "l1", to: "worker", label: ["signals"] },
+              { from: "worker", to: "llm", label: ["prompt"] },
+              { from: "worker", to: "evidence", label: ["fetch over HTTPS"] },
+              { from: "worker", to: "trust", label: ["read / update"] },
+              { from: "worker", to: "ui", label: ["verdict"] },
+            ],
+          },
           description:
             "Layer 1 local checks run in a content script on every page and send signals to the background worker. The worker's AI agent builds a reasoning prompt for the LLM provider — Groq by default, or Gemini or Claude — and fetches grounding evidence from official bank sites, RDAP and crt.sh. It reads and updates the personal trust profile in IndexedDB, and sends its verdict to the alert overlay and popup.",
           nodes: [
@@ -732,6 +779,15 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "Rahula Dancing Society Platform architecture",
+          narrow: {
+            order: ["web", "api", "db", "mail", "files"],
+            edges: [
+              { from: "web", to: "api", label: ["REST + JWT"] },
+              { from: "api", to: "db", label: ["Prisma"] },
+              { from: "api", to: "mail" },
+              { from: "api", to: "files", label: ["files"] },
+            ],
+          },
           description:
             "A Next.js frontend with public, auth and portal route groups calls an Express API over REST with JWT bearer tokens. The API is layered route, controller, service, with authenticate and authorize middleware and pure utils for quiz scoring and access rules. It stores data in PostgreSQL through Prisma, saves uploads to a local uploads folder, and sends welcome and password-reset email through a Google Apps Script proxy.",
           nodes: [
@@ -846,6 +902,17 @@ export const projects: Project[] = [
           width: 780,
           height: 392,
           title: "Mechanical Engineering Material Selection Assistant architecture",
+          narrow: {
+            order: ["ui", "reason", "chroma", "sqlite", "llm"],
+            edges: [
+              { from: "ui", to: "reason", label: ["query"] },
+              { from: "reason", to: "ui", label: ["cards"] },
+              { from: "reason", to: "chroma", label: ["semantic search"] },
+              { from: "sqlite", to: "chroma", label: ["reindex"] },
+              { from: "reason", to: "sqlite", label: ["exact values"] },
+              { from: "reason", to: "llm", label: ["calls"] },
+            ],
+          },
           description:
             "The Streamlit UI sends a plain-English query to the reason.py orchestrator. It first checks whether this is a material question without an API call, then turns the query into filters with a fast LLM, retrieves 18 class-diverse candidates from ChromaDB, has a smarter LLM select and rank them, and looks up allowable stress at temperature in SQLite. llm.py handles every LLM call with failover between Groq, Gemini and OpenAI, quota cooldowns and a cache. SQLite is the source of truth; ChromaDB is rebuilt from it.",
           nodes: [

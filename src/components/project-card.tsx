@@ -9,8 +9,8 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface text-text no-underline transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-accent"
     >
       <div className="flex items-center justify-between gap-2 border-b border-line bg-chrome px-4 py-2.5 text-xs text-muted">
-        <span>{project.slug}/</span>
-        <span className={solo ? "text-accent" : "text-info"}>{solo ? "solo" : project.team === "Team" ? "team" : `team ${project.team}`}</span>
+        <span className="min-w-0 truncate">{project.slug}/</span>
+        <span className={`shrink-0 ${solo ? "text-accent" : "text-info"}`}>{solo ? "solo" : project.team === "Team" ? "team" : `team ${project.team}`}</span>
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <h3 className="m-0 font-sans text-2xl font-bold">{project.name}</h3>

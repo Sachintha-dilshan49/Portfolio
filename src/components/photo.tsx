@@ -1,27 +1,41 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import { profile } from "@/content/profile";
 
+/**
+ * Accent duotone (grayscale + accent in "color" blend mode) that lifts to full
+ * colour on hover, on keyboard focus, or when tapped (a toggle, so it works on
+ * touch screens). Hover styles only apply on hover-capable devices, so a tap
+ * never leaves a "stuck" hover. Reduced motion: plain full colour, no tint.
+ */
 export function Photo({ className = "" }: { className?: string }) {
+  const [colour, setColour] = useState(false);
+
   if (profile.photo) {
-    // Accent duotone (grayscale + accent in "color" blend mode) that lifts to full
-    // colour on hover or keyboard focus. Reduced motion: plain full colour, no tint.
-    // tabIndex lets keyboard users reveal the colour too.
     return (
-      <div tabIndex={0} className={`group relative overflow-hidden rounded-xl border border-border bg-chrome ${className}`}>
+      <button
+        type="button"
+        aria-pressed={colour}
+        onClick={() => setColour((c) => !c)}
+        className={`group relative block cursor-pointer overflow-hidden rounded-xl border border-border bg-chrome p-0 ${className}`}
+      >
         <Image
           src={profile.photo}
           alt={`Photo of ${profile.name}`}
           fill
-          sizes="(max-width: 640px) 260px, 300px"
+          sizes="(max-width: 640px) 180px, 300px"
           loading="eager"
           fetchPriority="high"
-          className="object-cover object-[50%_20%] grayscale transition-[filter] duration-500 group-hover:grayscale-0 group-focus:grayscale-0 motion-reduce:grayscale-0"
+          className="object-cover object-[50%_20%] grayscale transition-[filter] duration-500 group-hover:grayscale-0 group-focus-visible:grayscale-0 group-aria-pressed:grayscale-0 motion-reduce:grayscale-0"
         />
-        <div
+        <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-accent opacity-60 mix-blend-color transition-opacity duration-500 group-hover:opacity-0 group-focus:opacity-0 motion-reduce:hidden"
+          className="pointer-events-none absolute inset-0 bg-accent opacity-60 mix-blend-color transition-opacity duration-500 group-hover:opacity-0 group-focus-visible:opacity-0 group-aria-pressed:opacity-0 motion-reduce:hidden"
         />
-      </div>
+        <span className="sr-only">, show in full colour</span>
+      </button>
     );
   }
 

@@ -33,15 +33,9 @@ export function CaseStudy({ project, next }: { project: Project; next: Project }
       {cs && (
         <Section title="Architecture">
           <figure className="m-0 flex flex-col gap-3">
-            <Reveal className="overflow-hidden rounded-xl border border-line bg-surface">
-              <div
-                className="overflow-x-auto p-4 sm:p-6"
-                tabIndex={0}
-                role="region"
-                aria-label="Architecture diagram (scrolls sideways on small screens)"
-              >
-                <ArchitectureDiagram id={`${project.slug}-arch`} diagram={cs.architecture.diagram} />
-              </div>
+            {/* Wide layout from md up; boxes stacked vertically on phones. */}
+            <Reveal className="rounded-xl border border-line bg-surface p-3 sm:p-6">
+              <ArchitectureDiagram id={`${project.slug}-arch`} diagram={cs.architecture.diagram} />
             </Reveal>
             <figcaption className="max-w-[720px] text-sm leading-relaxed text-muted">
               <RichText value={cs.architecture.caption} />
@@ -112,12 +106,16 @@ export function CaseStudy({ project, next }: { project: Project; next: Project }
         <ul className="m-0 flex list-none flex-col gap-2 p-0 text-sm">
           {project.repo && (
             <LinkRow label="github">
-              <a href={project.repo}>{project.repo.replace("https://", "")}</a>
+              <a href={project.repo} className={linkTarget}>
+                {project.repo.replace("https://", "")}
+              </a>
             </LinkRow>
           )}
           {project.live && (
             <LinkRow label="live demo">
-              <a href={project.live}>{project.live.replace("https://", "")} ↗</a>
+              <a href={project.live} className={linkTarget}>
+                {project.live.replace("https://", "")} ↗
+              </a>
             </LinkRow>
           )}
           {cs?.extraLinks?.map((l, i) =>
@@ -127,20 +125,29 @@ export function CaseStudy({ project, next }: { project: Project; next: Project }
               </li>
             ) : (
               <LinkRow key={l.href} label={l.label}>
-                <a href={l.href}>{l.href.replace("https://", "")}</a>
+                <a href={l.href} className={linkTarget}>
+                  {l.href.replace("https://", "")}
+                </a>
               </LinkRow>
             ),
           )}
         </ul>
       </Section>
 
-      <footer className="flex flex-wrap justify-between gap-4 border-t border-line pt-8 text-sm">
-        <Link href="/projects">← cd ..</Link>
-        <Link href={`/projects/${next.slug}`}>next: {next.name} →</Link>
+      <footer className="flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-line pt-6 text-sm">
+        <Link href="/projects" className={linkTarget}>
+          ← cd ..
+        </Link>
+        <Link href={`/projects/${next.slug}`} className={linkTarget}>
+          next: {next.name} →
+        </Link>
       </footer>
     </article>
   );
 }
+
+/** Standalone links get a 44px-tall hit area on touch screens. */
+const linkTarget = "inline-flex min-h-11 items-center";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -153,7 +160,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function LinkRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <li className="flex flex-wrap gap-x-3 break-all">
+    <li className="flex flex-wrap items-center gap-x-3 [overflow-wrap:anywhere]">
       <span className="w-24 shrink-0 text-muted">{label}</span>
       {children}
     </li>
@@ -176,10 +183,10 @@ function Header({ project }: { project: Project }) {
         <span>{project.slug}</span>
         <span className="text-muted">/README.md</span>
       </div>
-      <h1 className="m-0 font-sans text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{project.name}</h1>
+      <h1 className="m-0 font-sans text-[clamp(2rem,8vw,3rem)] font-bold leading-tight tracking-tight">{project.name}</h1>
       <p className="m-0 max-w-[720px] font-sans text-lg leading-relaxed text-soft sm:text-xl">{project.summary}</p>
       {project.badge && <div className="text-sm text-gold">▲ {project.badge}</div>}
-      <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 text-[13px]">
+      <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] gap-3 text-[13px]">
         {meta.map((m) => (
           <div key={m.label} className="rounded-lg border border-line bg-surface px-3.5 py-3">
             <dt className="text-muted">{m.label}</dt>

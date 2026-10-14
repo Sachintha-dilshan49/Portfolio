@@ -11,6 +11,7 @@ Tick items off there as they are finished.
 ## Commands
 - `npm run dev` — dev server on http://localhost:3000
 - `npm run lint` · `npm run typecheck` · `npm run build` — all three must pass before committing (CI runs the same)
+- `npm run test:e2e` — Playwright, against the production build (run `npm run build` first): no horizontal overflow on any route at 320/375/390/768 + phone landscape, 44px touch targets, 16px inputs; also saves 390px screenshots of every route in both themes to `test-results/screenshots/` (git-ignored). CI runs it as a separate job.
 
 ## Where things live
 - `src/content/` — ALL text and data (profile, projects, timeline). Change content here, never hard-code it in components.

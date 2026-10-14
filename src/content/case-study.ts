@@ -42,7 +42,19 @@ export type DiagramEdge = {
   labelAnchor?: "start" | "middle" | "end";
 };
 
+/**
+ * Phone layout: the same boxes stacked top to bottom. Arrows between
+ * neighbouring boxes are drawn straight with their label; any other arrow is
+ * routed down a gutter on the right, labelled where it enters its target.
+ */
+export type NarrowLayout = {
+  /** Node ids, top to bottom. */
+  order: string[];
+  edges: { from: string; to: string; label?: string[] }[];
+};
+
 export type Diagram = {
+  /** Wide (md and up) layout size, in viewBox units. */
   width: number;
   height: number;
   /** Read out by screen readers in place of the picture. */
@@ -50,6 +62,7 @@ export type Diagram = {
   description: string;
   nodes: DiagramNode[];
   edges: DiagramEdge[];
+  narrow: NarrowLayout;
 };
 
 /* ── Case study ───────────────────────────────────────────── */

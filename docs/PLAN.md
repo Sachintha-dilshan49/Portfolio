@@ -99,6 +99,8 @@ project has one, the template falls back to its `problem`, `role` and
 - [ ] Custom domain, Open Graph image per page
 - [ ] Lighthouse CI budget in GitHub Actions (performance, a11y ≥ 95)
 - [ ] Vercel Web Analytics
+- [x] Fully responsive at 320–1024px, portrait and landscape: phone nav, stacked hero, vertical diagrams, 44px targets, safe areas, touch-aware spotlight
+- [x] Playwright responsive test (overflow + touch targets) as a separate CI job
 - [ ] Test on real phones, keyboard-only, screen reader, reduced motion
 
 **Later / optional**

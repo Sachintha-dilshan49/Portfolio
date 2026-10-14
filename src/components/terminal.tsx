@@ -16,7 +16,7 @@ export function TerminalWindow({ title, children }: { title: string; children: R
 
 export function Prompt({ children, user = "guest@sachintha" }: { children: ReactNode; user?: string }) {
   return (
-    <div className="text-[15px]">
+    <div className="text-[clamp(13px,3.6vw,15px)] [overflow-wrap:anywhere]">
       <span className="text-accent">{user}</span>
       <span className="text-muted">:~$</span> {children}
     </div>
