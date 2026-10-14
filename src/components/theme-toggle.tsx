@@ -20,7 +20,9 @@ export function ThemeToggle() {
       aria-label={`Switch to ${next} theme`}
       className="min-h-11 min-w-11 rounded-full border border-border bg-surface px-3.5 text-[13px] text-text transition-colors hover:border-accent"
     >
-      {theme === "light" ? "☾ dark" : "☀ light"}
+      {/* Icon only on the narrowest phones, so the nav row fits; the aria-label carries the meaning. */}
+      {theme === "light" ? "☾" : "☀"}
+      <span className="hidden min-[360px]:inline"> {theme === "light" ? "dark" : "light"}</span>
     </button>
   );
 }

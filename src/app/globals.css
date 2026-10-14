@@ -105,6 +105,24 @@ body {
   outline: none;
 }
 
+/*
+ * Phone nav (components/nav.tsx): below md the links hide behind the menu
+ * button — but only when JavaScript is running (<html data-js>, set in <head>
+ * before paint), so no-JS visitors keep the links and never see a dead button.
+ */
+.nav-toggle {
+  display: none;
+}
+
+@media (width < 48rem) {
+  [data-js] .nav-toggle {
+    display: inline-flex;
+  }
+  [data-js] .nav-links:not([data-open="true"]) {
+    display: none;
+  }
+}
+
 /* ── Dot grid, home page only (components/dot-grid.tsx) ───── */
 .dot-grid {
   position: fixed;
