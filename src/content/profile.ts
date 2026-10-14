@@ -18,6 +18,21 @@ export const profile = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 };
 
+/** Home hero: a short login sequence, then `cat about.txt` (components/hero.tsx). */
+export const hero = {
+  title: "guest@sachintha: ~ — ttys001",
+  user: "guest",
+  prompt: "guest@sachintha",
+  tty: "ttys001",
+  welcome: "Welcome to sachintha.dev",
+  command: "cat about.txt",
+  headline: "Backend & Systems Engineering · Undergraduate, University of Moratuwa",
+  summary:
+    "I design and build backend systems: APIs, background processing, access control, and the infrastructure that keeps them dependable. My focus is on software that stays reliable under failure, with clear architecture and measurable behaviour. I work mainly with Java, Python and TypeScript, and I’m currently reading for a BSc (Hons) in Information Technology.",
+  actions: { projects: "View projects", cv: "Download CV", contact: "Contact" },
+};
+
+/** Key/value facts. No longer shown in the hero; the shell's `whoami` prints a few of them. */
 export type FetchLine = { key: string; value: string; tone?: "gold" | "ok" };
 
 export const neofetch: FetchLine[] = [

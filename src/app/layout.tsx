@@ -4,9 +4,9 @@ import "@fontsource-variable/space-grotesk";
 import "./globals.css";
 import { BorderGlow } from "@/components/border-glow";
 import { Nav } from "@/components/nav";
-import { themeScript } from "@/components/theme-toggle";
 import { profile } from "@/content/profile";
 import { projectLinks } from "@/content/projects";
+import { introScript, themeScript } from "@/lib/head-scripts";
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: `${themeScript};${introScript}` }} />
       </head>
       <body className="min-h-dvh antialiased">
         <a

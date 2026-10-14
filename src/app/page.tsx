@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { RichText } from "@/components/case-study/rich-text";
 import { DotGrid } from "@/components/dot-grid";
-import { Neofetch } from "@/components/neofetch";
+import { Hero } from "@/components/hero";
 import { ProjectCard } from "@/components/project-card";
 import { Shell } from "@/components/shell";
 import { Prompt } from "@/components/terminal";
+import { achievements } from "@/content/achievements";
 import { profile } from "@/content/profile";
 import { projectLinks, projects } from "@/content/projects";
 import { shell } from "@/content/shell";
-import { achievements } from "@/content/achievements";
 
 const btn =
   "inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg px-3 text-center text-[clamp(13px,3.8vw,15px)] no-underline transition-colors sm:px-5";
@@ -19,23 +19,8 @@ export default function Home() {
   return (
     <>
       <DotGrid />
-      <section className="flex flex-col gap-5 pb-16 pt-6">
-        <Neofetch />
-        {/* Two-column grid of full-width buttons on phones, a row from sm up. */}
-        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
-          <Link href="/projects" className={`${btn} bg-accent font-semibold text-accent-fg`}>
-            cd ./projects
-          </Link>
-          <a href={profile.cvPath} download={profile.cvFileName} className={`${btn} border border-border text-text hover:border-accent`}>
-            wget cv.pdf
-          </a>
-          <a href={profile.github} className={`${btn} border border-border text-text hover:border-accent`}>
-            open github
-          </a>
-          <Link href="/contact" className={`${btn} border border-border text-text hover:border-accent`}>
-            mail me
-          </Link>
-        </div>
+      <section className="pb-16 pt-6">
+        <Hero />
       </section>
 
       <section className="flex flex-col gap-6 border-t border-line py-12" aria-labelledby="shell-heading">

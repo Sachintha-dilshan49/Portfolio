@@ -225,12 +225,14 @@ body {
 }
 
 /*
- * Neofetch typing reveal (components/neofetch.tsx): each line is "typed" left
- * to right by a stepped clip, one after another, ~1s in all. Only visibility is
- * animated — the text is in the HTML for SEO and no-JS visitors, and with
- * animation off (reduced motion, print, already played) it is simply shown.
+ * Home hero login sequence (components/hero.tsx). The text is all in the
+ * server HTML; only visibility is animated, so nothing moves the layout.
+ * .intro-type: revealed left to right in steps, like typing (--steps, --dur).
+ * .intro-fade: a line fading in. Both wait --d before starting.
+ * With animation off — reduced motion (below), print, a repeat visit in the
+ * session or a click/keypress (html[data-intro="done"]) — it is simply shown.
  */
-@keyframes type-in {
+@keyframes intro-type {
   from {
     clip-path: inset(0 100% 0 0);
   }
@@ -239,18 +241,29 @@ body {
   }
 }
 
-.type-line {
-  animation: type-in 110ms steps(14, end) both;
-  animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
 }
 
-/* Set once it has played (components/type-once.tsx): coming back to the home page shows it static. */
-[data-typed] .type-line {
+.intro-type {
+  display: inline-block;
+  animation: intro-type var(--dur, 300ms) steps(var(--steps, 8), end) var(--d, 0ms) both;
+}
+
+.intro-fade {
+  animation: intro-fade 320ms ease-out var(--d, 0ms) both;
+}
+
+[data-intro="done"] .intro-type,
+[data-intro="done"] .intro-fade {
   animation: none;
 }
 
 @media print {
-  .type-line {
+  .intro-type,
+  .intro-fade {
     animation: none;
   }
 }

@@ -1,4 +1,4 @@
-import { neofetch, profile, skills } from "@/content/profile";
+import { hero, neofetch, profile, skills } from "@/content/profile";
 import type { ProjectLink } from "@/content/projects";
 import { shell } from "@/content/shell";
 import { achievements } from "@/content/achievements";
@@ -29,8 +29,9 @@ const emailLine = (): Line => [{ text: profile.email, href: `mailto:${profile.em
 const commands: Record<string, (projects: ProjectLink[]) => ShellResult> = {
   whoami: () => ({
     lines: [
-      [t(profile.name, "accent"), t(` — ${profile.role}`)],
-      [t(profile.summary)],
+      [t(profile.name, "accent")],
+      [t(hero.headline)],
+      [t(hero.summary)],
       ...neofetch
         .filter((l) => shell.whoamiKeys.includes(l.key))
         .map((l): Line => [t(`${l.key.toLowerCase()}: `, "muted"), t(l.value, l.tone)]),
