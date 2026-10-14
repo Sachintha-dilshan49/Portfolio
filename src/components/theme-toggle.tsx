@@ -28,7 +28,7 @@ export function ThemeToggle() {
         } catch {}
       }}
       aria-label={`Switch to ${next} theme`}
-      className="min-h-10 rounded-full border border-border bg-surface px-3.5 text-[13px] text-text transition-colors hover:border-accent"
+      className="min-h-11 min-w-11 rounded-full border border-border bg-surface px-3.5 text-[13px] text-text transition-colors hover:border-accent"
     >
       {theme === "light" ? "☾ dark" : "☀ light"}
     </button>

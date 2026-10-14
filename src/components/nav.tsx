@@ -10,30 +10,40 @@ const links = [
   { href: "/contact", label: "./contact" },
 ];
 
+/**
+ * Phones: brand + theme toggle on the first row, the three links as a
+ * full-width row of 44px buttons underneath. sm and up: one line.
+ */
 export function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap items-center justify-between gap-4 py-6" aria-label="Main">
-      <Link href="/" className="text-[15px] text-accent no-underline">
+    <nav
+      className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pb-4 pt-[max(1rem,env(safe-area-inset-top))] sm:py-6"
+      aria-label="Main"
+    >
+      <Link href="/" className="inline-flex min-h-11 items-center text-[15px] text-accent no-underline">
         ~/sachintha
       </Link>
-      <div className="flex flex-wrap items-center gap-6 text-sm">
+      <ul className="order-last m-0 grid w-full list-none grid-cols-3 gap-2 p-0 text-[13px] sm:order-none sm:ml-auto sm:flex sm:w-auto sm:gap-6 sm:text-sm">
         {links.map((l) => {
           const active = pathname === l.href || pathname.startsWith(l.href + "/");
           return (
-            <Link
-              key={l.href}
-              href={l.href}
-              aria-current={active ? "page" : undefined}
-              className={active ? "text-accent" : "text-soft transition-colors hover:text-accent"}
-            >
-              {l.label}
-            </Link>
+            <li key={l.href}>
+              <Link
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex min-h-11 items-center justify-center rounded-lg border bg-surface no-underline sm:border-0 sm:bg-transparent ${
+                  active ? "border-accent text-accent" : "border-line text-soft transition-colors hover:text-accent"
+                }`}
+              >
+                {l.label}
+              </Link>
+            </li>
           );
         })}
-        <ThemeToggle />
-      </div>
+      </ul>
+      <ThemeToggle />
     </nav>
   );
 }
