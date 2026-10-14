@@ -1,3 +1,5 @@
+import { todo, type CaseStudy } from "./case-study";
+
 export type ProjectTag = "backend" | "fullstack" | "ai" | "devops" | "security";
 
 export type Project = {
@@ -14,6 +16,8 @@ export type Project = {
   featured?: boolean;
   problem: string;
   highlights: string[];
+  /** Full case study — see docs/PLAN.md → "Case-study template". */
+  caseStudy?: CaseStudy;
 };
 
 export const projects: Project[] = [
@@ -36,6 +40,131 @@ export const projects: Project[] = [
       "Exponential backoff retries, then a dead-letter state instead of endless loops",
       "JUnit integration tests, GitHub Actions CI and a live Prometheus metrics endpoint",
     ],
+    caseStudy: {
+      overview: [
+        "A job queue built from scratch on Java, Spring Boot and PostgreSQL, packaged as a reusable library (jobqueue-core) with a pluggable handler interface. It tracks work, not messages: every job has a state, an attempt count, a lease held by whichever worker is running it, a retry schedule and a recorded failure reason.",
+        "Several worker processes claim jobs from the same table at once without ever claiming the same job twice. When a worker dies mid-job its lease expires and another worker picks the job back up. Delivery is at-least-once, so side effects are made idempotent with a key supplied by the caller.",
+        "Why build it: in production you would reach for Celery, Sidekiq, SQS or Temporal. This is a learning project, built to understand what those systems do underneath — claiming a job safely under concurrency, telling a dead worker from a slow one, what backoff and dead-lettering look like as rows in a table, and why at-least-once delivery pushes correctness onto the handler.",
+      ],
+      architecture: {
+        caption:
+          "One jar, two Spring profiles. There is no coordinator process: workers never talk to the API or to each other — PostgreSQL row locks and leases are the only coordination.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "Distributed Job Queue architecture",
+          description:
+            "A client sends POST /jobs to the API, which runs JobController, the Reaper, Flyway migrations and the Prometheus endpoint. N worker processes claim jobs directly from PostgreSQL with FOR UPDATE SKIP LOCKED, renew their lease with a heartbeat, and mark jobs done, retried or dead. The Reaper returns jobs with expired leases to PENDING, or DEAD once attempts are used up. PostgreSQL holds the jobs, completed_effects and fake_payments tables and is the only coordinator.",
+          nodes: [
+            { id: "client", x: 16, y: 60, w: 124, h: 64, title: "client", lines: ["any HTTP caller"] },
+            {
+              id: "api",
+              x: 230,
+              y: 24,
+              w: 230,
+              h: 120,
+              tone: "accent",
+              title: "API · default profile",
+              lines: ["JobController", "Reaper · sweep every 5s", "Flyway migrations", "/actuator/prometheus"],
+            },
+            {
+              id: "workers",
+              x: 520,
+              y: 24,
+              w: 230,
+              h: 120,
+              tone: "accent",
+              stack: 2,
+              title: "workers × N",
+              lines: ["worker profile, no web server", "claim poll · every 10ms", "type → JobHandler bean", "heartbeat timer while busy"],
+            },
+            {
+              id: "db",
+              x: 230,
+              y: 286,
+              w: 532,
+              h: 96,
+              tone: "info",
+              title: "PostgreSQL 16 — the only coordinator",
+              lines: ["jobs · completed_effects · fake_payments", "PENDING → RUNNING → SUCCEEDED | DEAD"],
+            },
+          ],
+          edges: [
+            { points: [[140, 92], [226, 92]], label: ["POST /jobs"], labelAt: [184, 82], labelAnchor: "middle" },
+            {
+              points: [[300, 144], [300, 282]],
+              label: ["insert job (PENDING)", "reaper: expired lease →", "PENDING, or DEAD when", "attempts are used up"],
+              labelAt: [312, 184],
+            },
+            {
+              points: [[590, 156], [590, 282]],
+              label: ["claim (SKIP LOCKED)", "heartbeat: extend lease", "done / retry / DEAD"],
+              labelAt: [602, 184],
+            },
+          ],
+        },
+      },
+      role: {
+        summary: "Solo project — I designed and built it end to end.",
+        owned: [
+          "The SQL at the core: the claim query, leases, retries, dead-lettering and the idempotent-effect statement (Spring JDBC, no JPA)",
+          "Worker, Reaper and the pluggable JobHandler interface",
+          "Integration and chaos tests against a real PostgreSQL, run in GitHub Actions CI",
+          "Docker Compose setup (database, API, 3 worker replicas) and the Prometheus metrics",
+        ],
+        timeframe: todo("when you built it and roughly how long it took"),
+      },
+      decisions: [
+        {
+          title: "Claim a job in one statement with FOR UPDATE SKIP LOCKED",
+          body: "A worker claims with a single UPDATE … WHERE id = (SELECT … FOR UPDATE SKIP LOCKED LIMIT 1) RETURNING *. Concurrent workers skip rows another transaction has locked instead of waiting on them, so N workers polling at the same moment get N different jobs.",
+          evidence:
+            "3 workers, 1000 jobs: about 1900 duplicate claims with read-then-update, 0 with the single statement.",
+        },
+        {
+          title: "Leases, renewed by a heartbeat timer",
+          body: "A claim stamps claimed_by (hostname + PID) and lease_expires_at. While the handler runs, a background timer extends the lease every lease-seconds / 3, so a slow job is never taken away; a dead worker stops renewing and the Reaper puts its job back. The trade-off: the later a worker dies, the later its job is noticed.",
+          evidence:
+            "A 40 s handler under a 30 s lease finished on attempt 1, never reclaimed. With 3 worker containers, one killed mid-job (exit 137): another worker finished it, attempts = 2.",
+        },
+        {
+          title: "Ownership checked on every write",
+          body: "markSucceeded, heartbeat, scheduleRetry and markDead all require state = 'RUNNING' AND claimed_by = ?. A worker that stalled past its lease cannot mark a job done that someone else now owns — the update hits 0 rows and it logs LEASE LOST.",
+          evidence: "Covered by integration tests for completion and heartbeat ownership.",
+        },
+        {
+          title: "Exponential backoff with jitter, then a dead letter",
+          body: "Attempts are counted at claim time, so a job that crashes its worker still counts. A failed attempt waits base × 2^(attempts − 1) plus 0–3 s of random jitter, so jobs that failed together don't retry in lockstep. After 5 attempts the job goes to DEAD with last_error kept. The Reaper applies the same rule, so a poison job that kills its worker can't be resurrected forever.",
+          evidence: "A failing job retried after 7 s, 11 s, 22 s and 42 s, then went DEAD on attempt 5 with last_error preserved.",
+        },
+        {
+          title: "At-least-once delivery plus idempotency keys",
+          body: "Exactly-once across a worker and a database isn't achievable — a crash between doing the work and recording it is always possible. So an idempotency key is required on POST /jobs, and one SQL statement both records the key (ON CONFLICT DO NOTHING) and applies the effect, so the effect lands once however many times the job runs.",
+          evidence:
+            "Chaos test: 200 jobs, 4 workers, 15% of claims abandoned mid-flight — every job reached a final state and no key was paid twice.",
+        },
+        {
+          title: "Pluggable handlers",
+          body: "The worker knows nothing about job logic: it looks the job's type up in a map of JobHandler beans. Adding a job type is one @Component. Failure is just a thrown exception, which goes down the same retry and dead-letter path; two handlers for one type fail at startup instead of one being picked silently.",
+          evidence:
+            "A job with no matching handler retried, then went DEAD on attempt 5 with last_error = “no handler registered for type: unknown-type”.",
+        },
+        {
+          title: "Metrics that can't drift from the logs",
+          body: "Counters (claimed, succeeded, retried, dead, leases reaped, leases lost) are incremented on the same code branch as the matching log line. Gauges read queue depth straight from the database on every scrape of /actuator/prometheus — a rising pending gauge is the signal that the queue is falling behind.",
+        },
+      ],
+      stackNotes: {
+        Java: "Java 25",
+        "Spring Boot": "Spring Boot 4.1.1 with Spring JDBC (JdbcTemplate) — no JPA, the SQL is the point",
+        PostgreSQL: "PostgreSQL 16 — row locks and leases are the whole coordination layer",
+        Docker: "Docker Compose: database, API and 3 worker replicas",
+        Flyway: "schema migrations, run by the API only",
+        JUnit: "JUnit 5 integration and chaos tests against a real database, run in GitHub Actions",
+        Prometheus: "Micrometer registry behind /actuator/prometheus",
+      },
+      extraLinks: [todo("link to the jobqueue-core package on GitHub Packages")],
+    },
   },
   {
     slug: "waypoint-logistics",
