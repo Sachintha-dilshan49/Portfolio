@@ -52,10 +52,12 @@ CLAUDE.md              rules for Claude Code (imports AGENTS.md)
 - [x] GitHub Actions CI
 
 **Phase 2 — content & case studies**
-- [ ] Add photo (`public/me.jpg`) and public CV (`public/cv.pdf`)
+- [x] Add photo (`public/me.jpg`, ≤1000px, metadata stripped) — accent duotone, full colour on hover/focus
+- [x] "Download CV" links save as `Sachintha-Dilshan-CV.pdf`
+- [ ] Add public CV (`public/cv.pdf`) — blocked: current draft still has a referee's phone number
 - [x] One case-study template for every project (see *Case-study template* below)
 - [x] Architecture diagrams as SVG that fade in on scroll (both themes, reduced motion)
-- [x] Case study: Distributed Job Queue — open `[TODO: …]`s still to answer
+- [x] Case study: Distributed Job Queue — one `[TODO: …]` left (timeframe)
 - [ ] Case study: Waypoint Logistics
 - [ ] Case study: AAAC
 - [ ] Case study: CoreHR

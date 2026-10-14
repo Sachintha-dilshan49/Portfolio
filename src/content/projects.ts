@@ -33,7 +33,7 @@ export const projects: Project[] = [
     repo: "https://github.com/Sachintha-dilshan49/distributed-job-queue",
     featured: true,
     problem:
-      "Background work such as emails, PDF builds and document processing must not be lost when the worker running it dies, and must never run twice at the same time.",
+      "Background work such as emails, PDF builds and document processing must not be lost when the worker running it dies. Each job is claimed by one worker at a time (SKIP LOCKED plus leases); delivery is at-least-once, so handlers should be idempotent.",
     highlights: [
       "Published jobqueue-core to GitHub Packages with a pluggable handler interface",
       "Worker leases and heartbeats so a crashed worker's job is picked up again",
@@ -163,7 +163,9 @@ export const projects: Project[] = [
         JUnit: "JUnit 5 integration and chaos tests against a real database, run in GitHub Actions",
         Prometheus: "Micrometer registry behind /actuator/prometheus",
       },
-      extraLinks: [todo("link to the jobqueue-core package on GitHub Packages")],
+      extraLinks: [
+        { label: "package", href: "https://github.com/Sachintha-dilshan49/distributed-job-queue/packages/3249511" },
+      ],
     },
   },
   {

@@ -19,7 +19,7 @@ export default function Home() {
           <Link href="/projects" className={`${btn} bg-accent font-semibold text-accent-fg`}>
             cd ./projects
           </Link>
-          <a href={profile.cvPath} className={`${btn} border border-border text-text hover:border-accent`}>
+          <a href={profile.cvPath} download={profile.cvFileName} className={`${btn} border border-border text-text hover:border-accent`}>
             wget cv.pdf
           </a>
           <a href={profile.github} className={`${btn} border border-border text-text hover:border-accent`}>
