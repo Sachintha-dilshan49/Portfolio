@@ -141,6 +141,24 @@ body {
   opacity: 1;
 }
 
+/* Smaller field below md, full field from md up. */
+.code-field--sm {
+  font-size: 12px;
+}
+
+.code-field--lg {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .code-field--sm {
+    display: none;
+  }
+  .code-field--lg {
+    display: block;
+  }
+}
+
 /* ── Terminal bits ─────────────────────────────────────────── */
 @keyframes blink {
   50% {

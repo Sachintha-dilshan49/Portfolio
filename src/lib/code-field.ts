@@ -24,3 +24,6 @@ function build(rows: number, cols: number) {
 
 // Enough to cover a large monitor; the layer is clipped to the viewport.
 export const CODE_FIELD = build(70, 320);
+
+// Phones (portrait and landscape) need far less, and every repaint of the glow is cheaper.
+export const CODE_FIELD_SMALL = build(48, 140);
