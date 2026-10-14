@@ -833,6 +833,121 @@ export const projects: Project[] = [
       "Verified properties kept in SQLite as the source of truth",
       "Multi-provider LLM support with caching and failover",
     ],
+    caseStudy: {
+      overview: [
+        "An AI tool that helps mechanical engineering students pick the right material for a design task. Describe the operating conditions in plain English; get back suitable metals with properties, reasoning and citations.",
+        "Why it exists: students spend hours flipping between Shigley, ASME standards and datasheets for one design decision, and generic chatbots make up property values without citations. This tool runs RAG over a curated database, so the LLM only reasons over verified data — “the LLM is the mouth, the database is the brain.”",
+        "Status: work in progress. The full pipeline works end to end — query understanding, retrieval, reasoning and the Streamlit UI — with 66 curated materials across 24 classes.",
+      ],
+      architecture: {
+        caption:
+          "The LLM never supplies a property value: it chooses among rows and explains the choice, and every number on screen comes from SQLite. ChromaDB is only a search index, rebuilt from SQLite in under a minute.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "Material Selection Assistant architecture",
+          description:
+            "The Streamlit UI sends a plain-English query to the reason.py orchestrator. It first checks whether this is a material question without an API call, then turns the query into filters with a fast LLM, retrieves 18 class-diverse candidates from ChromaDB, has a smarter LLM select and rank them, and looks up allowable stress at temperature in SQLite. llm.py handles every LLM call with failover between Groq, Gemini and OpenAI, quota cooldowns and a cache. SQLite is the source of truth; ChromaDB is rebuilt from it.",
+          nodes: [
+            { id: "ui", x: 16, y: 24, w: 190, h: 96, title: "Streamlit UI", lines: ["chat · material cards", "comparison table"] },
+            {
+              id: "reason",
+              x: 270,
+              y: 24,
+              w: 250,
+              h: 136,
+              tone: "accent",
+              title: "reason.py pipeline",
+              lines: [
+                "1 intent gate (no API call)",
+                "2 query → filters [fast LLM]",
+                "3 retrieve 18 candidates",
+                "4 select & rank [smart LLM]",
+                "5 allowable stress lookup",
+              ],
+            },
+            {
+              id: "llm",
+              x: 574,
+              y: 24,
+              w: 190,
+              h: 100,
+              title: "llm.py",
+              lines: ["Groq · Gemini · OpenAI", "failover + cooldowns", "response cache"],
+            },
+            {
+              id: "chroma",
+              x: 270,
+              y: 276,
+              w: 210,
+              h: 96,
+              tone: "info",
+              title: "ChromaDB",
+              lines: ["derived search index", "sentence-transformers"],
+            },
+            {
+              id: "sqlite",
+              x: 544,
+              y: 276,
+              w: 220,
+              h: 96,
+              tone: "info",
+              title: "SQLite · source of truth",
+              lines: ["materials", "allowable stress tables"],
+            },
+          ],
+          edges: [
+            { points: [[206, 56], [266, 56]], label: ["query"], labelAt: [236, 48], labelAnchor: "middle" },
+            { points: [[266, 100], [210, 100]], label: ["cards"], labelAt: [238, 92], labelAnchor: "middle" },
+            { points: [[520, 64], [570, 64]], label: ["calls"], labelAt: [545, 56], labelAnchor: "middle" },
+            { points: [[380, 160], [380, 272]], label: ["semantic", "search"], labelAt: [390, 204] },
+            {
+              points: [[480, 160], [480, 228], [654, 228], [654, 272]],
+              label: ["exact values"],
+              labelAt: [567, 220],
+              labelAnchor: "middle",
+            },
+            { points: [[544, 330], [484, 330]], label: ["reindex"], labelAt: [514, 322], labelAnchor: "middle" },
+          ],
+        },
+      },
+      role: {
+        summary: "I built everything.",
+        owned: [],
+        timeframe: "Jun – Aug 2026",
+      },
+      decisions: [
+        {
+          title: "The database is the brain",
+          body: "The LLM chooses among retrieved rows and explains its choice; every number on screen comes from SQLite. Missing properties stay NULL instead of being filled in.",
+        },
+        {
+          title: "Curated data over scraped data",
+          body: "66 materials across 24 classes, every row hand-verified with a cited source. Bulk scraped datasets are deliberately left out: rows without corrosion, chemical-resistance and application context crowd out good candidates and degrade the recommendations.",
+        },
+        {
+          title: "An intent gate before any API call",
+          body: "Greetings, questions about the tool and off-topic messages are answered directly, without calling an LLM.",
+        },
+        {
+          title: "Class-diverse retrieval, then ranking",
+          body: "ChromaDB returns 18 class-diverse candidates; the smarter model selects and ranks from that pool, and allowable stress at temperature is looked up in SQLite afterwards.",
+        },
+        {
+          title: "Two models, with failover and caching",
+          body: "A fast model turns the query into filters and a smarter one does the reasoning. All LLM calls go through llm.py, which fails over between Groq, Gemini and OpenAI with quota cooldowns, and caches responses.",
+          evidence:
+            "A fresh query costs about 8,500 tokens (~3,300 on the fast model, ~5,200 on the smart one); a repeated query costs zero — it is served from the cache.",
+        },
+      ],
+      stackNotes: {
+        Python: "Python 3.11",
+        ChromaDB: "derived semantic index; safe to delete and rebuild from SQLite",
+        "Sentence Transformers": "embeddings for semantic search over material descriptions",
+        SQLite: "source of truth: the materials and allowable-stress tables",
+        Streamlit: "chat UI with material cards and a comparison table",
+      },
+    },
   },
 ];
 
