@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   description: `Get in touch with ${profile.name}.`,
 };
 
-const links = [
+const links: { label: string; value: string; href: string; download?: string }[] = [
   { label: "email", value: profile.email, href: `mailto:${profile.email}` },
   { label: "github", value: "Sachintha-dilshan49", href: profile.github },
   { label: "linkedin", value: "sachintha-dilshan", href: profile.linkedin },
-  { label: "cv", value: "cv.pdf ↓", href: profile.cvPath },
+  { label: "cv", value: "cv.pdf ↓", href: profile.cvPath, download: profile.cvFileName },
 ];
 
 export default function ContactPage() {
@@ -28,7 +28,7 @@ export default function ContactPage() {
         <ul className="m-0 flex list-none flex-col gap-2.5 p-0 pt-2 text-sm">
           {links.map((l) => (
             <li key={l.label}>
-              <a href={l.href} className="flex gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 no-underline transition-colors hover:border-accent">
+              <a href={l.href} download={l.download} className="flex gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 no-underline transition-colors hover:border-accent">
                 <span className="w-[72px] text-muted">{l.label}</span>
                 <span className="text-accent">{l.value}</span>
               </a>

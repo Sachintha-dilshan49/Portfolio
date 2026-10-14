@@ -3,18 +3,24 @@ import { profile } from "@/content/profile";
 
 export function Photo({ className = "" }: { className?: string }) {
   if (profile.photo) {
+    // Accent duotone (grayscale + accent in "color" blend mode) that lifts to full
+    // colour on hover or keyboard focus. Reduced motion: plain full colour, no tint.
+    // tabIndex lets keyboard users reveal the colour too.
     return (
-      <div className={`group relative overflow-hidden rounded-xl border border-border ${className}`}>
+      <div tabIndex={0} className={`group relative overflow-hidden rounded-xl border border-border bg-chrome ${className}`}>
         <Image
           src={profile.photo}
           alt={`Photo of ${profile.name}`}
           fill
-          sizes="(max-width: 768px) 100vw, 300px"
-          priority
-          className="object-cover grayscale transition duration-500 group-hover:grayscale-0"
+          sizes="(max-width: 640px) 260px, 300px"
+          loading="eager"
+          fetchPriority="high"
+          className="object-cover object-[50%_20%] grayscale transition-[filter] duration-500 group-hover:grayscale-0 group-focus:grayscale-0 motion-reduce:grayscale-0"
         />
-        {/* green duotone tint, removed on hover */}
-        <div className="pointer-events-none absolute inset-0 bg-accent opacity-25 mix-blend-multiply transition-opacity duration-500 group-hover:opacity-0" />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-accent opacity-60 mix-blend-color transition-opacity duration-500 group-hover:opacity-0 group-focus:opacity-0 motion-reduce:hidden"
+        />
       </div>
     );
   }

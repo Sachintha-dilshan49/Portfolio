@@ -10,10 +10,11 @@ export const profile = {
   email: "nlsachinthadilshan@gmail.com",
   github: "https://github.com/Sachintha-dilshan49",
   linkedin: "https://www.linkedin.com/in/sachintha-dilshan-498a3a306",
-  // Put a public version of the CV (without referees' phone numbers) at public/cv.pdf
+  // Public CV at public/cv.pdf (may include referee details — the referees have consented)
   cvPath: "/cv.pdf",
-  // Put a square or portrait photo at public/me.jpg and set this to "/me.jpg"
-  photo: null as string | null,
+  // Name the browser saves the CV under
+  cvFileName: "Sachintha-Dilshan-CV.pdf",
+  photo: "/me.jpg" as string | null,
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 };
 
