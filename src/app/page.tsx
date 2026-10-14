@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RichText } from "@/components/case-study/rich-text";
 import { DotGrid } from "@/components/dot-grid";
 import { Neofetch } from "@/components/neofetch";
 import { ProjectCard } from "@/components/project-card";
@@ -7,7 +8,7 @@ import { Prompt } from "@/components/terminal";
 import { profile } from "@/content/profile";
 import { projectLinks, projects } from "@/content/projects";
 import { shell } from "@/content/shell";
-import { wins } from "@/content/timeline";
+import { achievements } from "@/content/achievements";
 
 const btn =
   "inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg px-3 text-center text-[clamp(13px,3.8vw,15px)] no-underline transition-colors sm:px-5";
@@ -60,13 +61,20 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col gap-6 border-t border-line py-12">
-        <Prompt>cat wins.txt</Prompt>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <Prompt>cat wins.txt</Prompt>
+          <Link href="/achievements" className="inline-flex min-h-11 items-center text-sm text-accent">
+            all achievements →
+          </Link>
+        </div>
         <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4 p-0">
-          {wins.map((w) => (
-            <li key={w.event} className="flex flex-col gap-1.5 rounded-b-xl border-t-2 border-accent bg-surface p-5">
-              <span className="font-sans text-xl font-bold">{w.place}</span>
-              <span className="text-[15px] text-soft">{w.event}</span>
-              <span className="text-xs text-muted">{w.where}</span>
+          {achievements.map((a) => (
+            <li key={a.slug} className="flex flex-col gap-1.5 rounded-b-xl border-t-2 border-accent bg-surface p-5">
+              <span className="font-sans text-xl font-bold">{a.placement}</span>
+              <span className="text-[15px] text-soft">{a.title}</span>
+              <span className="text-xs text-muted">
+                <RichText value={a.organiser} />
+              </span>
             </li>
           ))}
         </ul>

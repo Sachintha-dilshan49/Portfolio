@@ -29,6 +29,7 @@ export const shell = {
   whoamiKeys: ["Role", "Uni", "Focus", "Status"],
   helpFooter: "Tab completes · ↑/↓ history · Ctrl+K / ⌘K opens the command palette",
   projectsHint: "open a name to read its case study",
+  winsMore: "photos and details on the achievements page",
   contactPage: "or write to me on the contact page",
   cvDownloading: "downloading",
   cvFallback: "nothing happened? download it here",

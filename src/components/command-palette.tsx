@@ -7,6 +7,7 @@ import type { ProjectLink } from "@/content/projects";
 import { pages, palette } from "@/content/site";
 import { copyText, downloadCv, openExternal, toggleTheme } from "@/lib/actions";
 import { fuzzyFilter } from "@/lib/fuzzy";
+import { lockScroll, trapTab } from "@/lib/focus-trap";
 
 type Action = "copy-email" | "download-cv" | "toggle-theme" | "github" | "linkedin";
 type Item = { id: string; group: string; title: string; hint?: string; keywords?: string; href?: string; action?: Action };
@@ -97,13 +98,7 @@ export function CommandPalette({ projects }: { projects: ProjectLink[] }) {
       inputRef.current?.focus();
     }
     if (!open && dialog.open) dialog.close();
-    if (!open) return;
-    const root = document.documentElement;
-    const before = root.style.overflow;
-    root.style.overflow = "hidden";
-    return () => {
-      root.style.overflow = before;
-    };
+    if (open) return lockScroll();
   }, [open]);
 
   // Keep the highlighted option visible.
@@ -138,17 +133,6 @@ export function CommandPalette({ projects }: { projects: ProjectLink[] }) {
       e.preventDefault();
       choose(results[current]);
     }
-  };
-
-  // Focus trap: Tab / Shift+Tab cycle through the dialog's own controls.
-  const onDialogKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
-    if (e.key !== "Tab") return;
-    const focusables = [...e.currentTarget.querySelectorAll<HTMLElement>("input, button")];
-    if (!focusables.length) return;
-    const i = focusables.indexOf(document.activeElement as HTMLElement);
-    const next = e.shiftKey ? (i <= 0 ? focusables.length - 1 : i - 1) : (i + 1) % focusables.length;
-    e.preventDefault();
-    focusables[next].focus();
   };
 
   const renderOption = (item: Item) => {
@@ -204,7 +188,7 @@ export function CommandPalette({ projects }: { projects: ProjectLink[] }) {
           (returnFocus.current?.isConnected ? returnFocus.current : triggerRef.current)?.focus();
         }}
         onClick={(e) => e.target === e.currentTarget && setOpen(false)}
-        onKeyDown={onDialogKeyDown}
+        onKeyDown={trapTab}
         className="mx-auto mb-auto mt-[max(1rem,min(12vh,6rem))] w-[min(40rem,calc(100vw-2rem))] max-w-none rounded-[14px] border border-border bg-surface p-0 text-text shadow-2xl backdrop:bg-black/60"
       >
         <div className="flex max-h-[min(34rem,calc(100dvh-4rem))] flex-col">

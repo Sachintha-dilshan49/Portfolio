@@ -1,7 +1,8 @@
 import { neofetch, profile, skills } from "@/content/profile";
 import type { ProjectLink } from "@/content/projects";
 import { shell } from "@/content/shell";
-import { wins } from "@/content/timeline";
+import { achievements } from "@/content/achievements";
+import { plain } from "@/content/case-study";
 
 /**
  * The interactive shell's interpreter: input text in, lines of output out.
@@ -48,7 +49,10 @@ const commands: Record<string, (projects: ProjectLink[]) => ShellResult> = {
   }),
 
   wins: () => ({
-    lines: wins.map((w): Line => [t(w.place, "gold"), t(` — ${w.event}`), t(` · ${w.where}`, "muted")]),
+    lines: [
+      ...achievements.map((a): Line => [t(a.placement, "gold"), t(` — ${a.title}`), t(` · ${plain(a.organiser)}`, "muted")]),
+      [t("# ", "muted"), { text: shell.winsMore, href: "/achievements", kind: "internal" }],
+    ],
   }),
 
   stack: () => ({

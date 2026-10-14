@@ -17,6 +17,11 @@ export function isTodo<T>(value: T | Todo): value is Todo {
   return typeof value === "object" && value !== null && "todo" in value;
 }
 
+/** Text as a plain string (for the shell); a TODO reads as `[TODO: …]`. */
+export function plain(value: Text): string {
+  return isTodo(value) ? `[TODO: ${value.todo}]` : value;
+}
+
 /* ── Architecture diagram ─────────────────────────────────── */
 
 export type DiagramTone = "accent" | "info" | "plain";
