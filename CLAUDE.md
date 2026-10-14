@@ -11,14 +11,14 @@ Tick items off there as they are finished.
 ## Commands
 - `npm run dev` — dev server on http://localhost:3000
 - `npm run lint` · `npm run typecheck` · `npm run build` — all three must pass before committing (CI runs the same)
-- `npm run test:e2e` — Playwright, against the production build (run `npm run build` first): no horizontal overflow on any route at 320/375/390/768 + phone landscape, 44px touch targets, 16px inputs; also saves 390px screenshots of every route in both themes to `test-results/screenshots/` (git-ignored). `tests/interactive.spec.ts` covers the home-page shell (chips, typing, history, Tab, easter eggs, CV download), the ⌘K palette (Ctrl+K, keyboard, focus return) and the neofetch typing reveal (reduced motion, no-JS). CI runs it as a separate job.
+- `npm run test:e2e` — Playwright, against the production build (run `npm run build` first): no horizontal overflow on any route at 320/375/390/768 + phone landscape, 44px touch targets, 16px inputs; also saves 390px screenshots of every route in both themes to `test-results/screenshots/` (git-ignored). `tests/interactive.spec.ts` covers the home-page shell (chips, typing, history, Tab, easter eggs, CV download), the ⌘K palette (Ctrl+K, keyboard, focus return) ; `tests/hero.spec.ts` the home login sequence (once per session, skip on click/key, no layout shift, reduced motion, no-JS, name is the largest text); `tests/pages.spec.ts` /achievements (overflow at 375/768, lightbox) and About. CI runs it as a separate job.
 
 ## Where things live
-- `src/content/` — ALL text and data (profile, projects, timeline). Change content here, never hard-code it in components.
-- `src/components/` — UI pieces (terminal window, neofetch, nav, theme toggle, dot grid, border glow, shell, command palette…)
+- `src/content/` — ALL text and data (profile, projects, achievements, shell, site). Change content here, never hard-code it in components.
+- `src/components/` — UI pieces (terminal window, hero, nav, theme toggle, dot grid, border glow, shell, command palette, gallery/lightbox…)
 - `src/lib/` — shell interpreter (pure), fuzzy matcher, browser actions shared by the shell and the palette
-- `src/app/` — routes: `/`, `/projects`, `/projects/[slug]`, `/about`, `/contact`
-- `public/` — `me.jpg` (photo) and `cv.pdf` (public CV). public/cv.pdf may include referee details — the referees have consented.
+- `src/app/` — routes: `/`, `/projects`, `/projects/[slug]`, `/achievements`, `/about`, `/contact`
+- `public/` — `me.jpg` (photo) and `cv.pdf` (public CV), `achievements/<slug>/NN.jpg` (from `node scripts/process-photos.mjs`: ≤1600px, metadata stripped; source photos go in git-ignored `_inbox/achievements/<slug>/`). public/cv.pdf may include referee details — the referees have consented.
 
 ## Rules
 - Colours come from the CSS variable tokens in `src/app/globals.css`; every change must work in BOTH themes.

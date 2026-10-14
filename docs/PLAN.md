@@ -32,11 +32,12 @@ the site is just files on a CDN — fast and effectively free to run.
 
 ```
 src/
-  app/                 routes: /, /projects, /projects/[slug], /about, /contact
-  components/          terminal window, neofetch, nav, theme toggle, dot grid, border glow, shell, ⌘K palette…
+  app/                 routes: /, /projects, /projects/[slug], /achievements, /about, /contact
+  components/          terminal window, hero (login sequence), nav, theme toggle, dot grid, border glow, shell, ⌘K palette, gallery…
   lib/                 shell interpreter, fuzzy matcher, browser actions (download CV, copy, theme)
-  content/             profile.ts · projects.ts · timeline.ts · shell.ts · site.ts   ← edit these
-public/                me.jpg (photo), cv.pdf (public CV)
+  content/             profile.ts · projects.ts · achievements.ts · shell.ts · site.ts   ← edit these
+public/                me.jpg (photo), cv.pdf (public CV), achievements/<slug>/ (processed photos)
+scripts/process-photos.mjs   _inbox photos → ≤1600px, metadata stripped, blur placeholders
 docs/PLAN.md           this file
 CLAUDE.md              rules for Claude Code (imports AGENTS.md)
 .github/workflows/     ci.yml
@@ -93,7 +94,13 @@ project has one, the template falls back to its `problem`, `role` and
 - [x] ⌘K / Ctrl+K command palette: fuzzy search over pages, projects and actions (copy email, download CV, toggle theme, GitHub, LinkedIn); native `<dialog>`, no library; ⌘K button in the nav on phones too
 - [ ] Text-scramble headings, `cd` page transitions, magnetic buttons
 - [x] Interactive shell section (`whoami`, `projects`, `wins`…) + easter eggs — auto-runs `whoami` on first view; chips + input with history and Tab completion; output from `src/content/`, announced via an aria-live region
-- [x] Neofetch typing reveal: CSS-only (~1s, once per visit), text stays in the HTML, skipped under reduced motion
+- [x] ~~Neofetch typing reveal~~ → replaced by the restructure below
+
+**Restructure (feat/restructure)**
+- [x] Home hero: login sequence (~2.4s, once per session, click/key skips, no layout shift, reduced motion → final state) then name, headline, summary and View projects · Download CV · Contact; neofetch lines and swatches removed
+- [x] /achievements: cards (placement, event, organiser, year, team, description, case-study link) with photo galleries + accessible lightbox; extra-curricular cards; in nav, sitemap and ⌘K
+- [x] About: bio → education → skill cards → certification cards → Download CV; wins and git-log timeline removed, "See achievements →" link
+- [ ] Fill the remaining [TODO]s (ComFix team + solution, Aurora event type, OctWave organiser + year, certification years + credential links)
 - [ ] Contact form → `/api/contact` Route Handler → Resend, with honeypot + rate limit
 
 **Phase 4 — launch & polish**

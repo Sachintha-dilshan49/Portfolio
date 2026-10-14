@@ -1,16 +1,13 @@
 import Link from "next/link";
+import { RichText } from "@/components/case-study/rich-text";
 import { DotGrid } from "@/components/dot-grid";
-import { Neofetch } from "@/components/neofetch";
+import { Hero } from "@/components/hero";
 import { ProjectCard } from "@/components/project-card";
 import { Shell } from "@/components/shell";
 import { Prompt } from "@/components/terminal";
-import { profile } from "@/content/profile";
+import { achievements } from "@/content/achievements";
 import { projectLinks, projects } from "@/content/projects";
 import { shell } from "@/content/shell";
-import { wins } from "@/content/timeline";
-
-const btn =
-  "inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg px-3 text-center text-[clamp(13px,3.8vw,15px)] no-underline transition-colors sm:px-5";
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
@@ -18,23 +15,8 @@ export default function Home() {
   return (
     <>
       <DotGrid />
-      <section className="flex flex-col gap-5 pb-16 pt-6">
-        <Neofetch />
-        {/* Two-column grid of full-width buttons on phones, a row from sm up. */}
-        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
-          <Link href="/projects" className={`${btn} bg-accent font-semibold text-accent-fg`}>
-            cd ./projects
-          </Link>
-          <a href={profile.cvPath} download={profile.cvFileName} className={`${btn} border border-border text-text hover:border-accent`}>
-            wget cv.pdf
-          </a>
-          <a href={profile.github} className={`${btn} border border-border text-text hover:border-accent`}>
-            open github
-          </a>
-          <Link href="/contact" className={`${btn} border border-border text-text hover:border-accent`}>
-            mail me
-          </Link>
-        </div>
+      <section className="pb-16 pt-6">
+        <Hero />
       </section>
 
       <section className="flex flex-col gap-6 border-t border-line py-12" aria-labelledby="shell-heading">
@@ -60,25 +42,23 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col gap-6 border-t border-line py-12">
-        <Prompt>cat wins.txt</Prompt>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <Prompt>cat wins.txt</Prompt>
+          <Link href="/achievements" className="inline-flex min-h-11 items-center text-sm text-accent">
+            all achievements →
+          </Link>
+        </div>
         <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4 p-0">
-          {wins.map((w) => (
-            <li key={w.event} className="flex flex-col gap-1.5 rounded-b-xl border-t-2 border-accent bg-surface p-5">
-              <span className="font-sans text-xl font-bold">{w.place}</span>
-              <span className="text-[15px] text-soft">{w.event}</span>
-              <span className="text-xs text-muted">{w.where}</span>
+          {achievements.map((a) => (
+            <li key={a.slug} className="flex flex-col gap-1.5 rounded-b-xl border-t-2 border-accent bg-surface p-5">
+              <span className="font-sans text-xl font-bold">{a.placement}</span>
+              <span className="text-[15px] text-soft">{a.title}</span>
+              <span className="text-xs text-muted">
+                <RichText value={a.organiser} />
+              </span>
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="flex flex-wrap items-center justify-between gap-6 border-t border-line py-14">
-        <h2 className="m-0 max-w-[640px] font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-bold leading-tight">
-          Hiring a backend / DevOps intern for {profile.availability.split(" ")[1]}?
-        </h2>
-        <Link href="/contact" className={`${btn} bg-accent font-semibold text-accent-fg`}>
-          ./contact.sh
-        </Link>
       </section>
     </>
   );

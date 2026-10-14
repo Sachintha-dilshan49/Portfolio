@@ -1,8 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
-import { neofetch, profile } from "../src/content/profile";
+import { hero, profile } from "../src/content/profile";
 import { projects } from "../src/content/projects";
 import { shell } from "../src/content/shell";
 import { palette } from "../src/content/site";
+import { waitForHydration } from "./hydration";
 import { findOverflow } from "./overflow";
 
 const output = (page: Page) => page.getByLabel(shell.outputLabel);
@@ -22,7 +23,7 @@ test.describe("interactive shell", () => {
 
   test("auto-runs whoami when it first comes into view", async ({ page }) => {
     await input(page).scrollIntoViewIfNeeded();
-    await expect(output(page)).toContainText(profile.summary);
+    await expect(output(page)).toContainText(hero.summary);
     await expect(output(page).locator("[data-shell-entry]")).toHaveCount(1);
   });
 
@@ -106,6 +107,7 @@ test.describe("interactive shell", () => {
 test.describe("command palette", () => {
   test("Ctrl+K opens it and Enter navigates to a project", async ({ page }) => {
     await page.goto("/about");
+    await waitForHydration(page);
     await page.keyboard.press("Control+k");
     await expect(dialog(page)).toBeVisible();
     await expect(page.getByRole("combobox")).toBeFocused();
@@ -142,6 +144,7 @@ test.describe("command palette", () => {
   test("Toggle theme action", async ({ page }) => {
     await page.goto("/");
     const before = await page.evaluate(() => document.documentElement.dataset.theme);
+    await waitForHydration(page);
     await page.keyboard.press("Control+k");
     await page.keyboard.type("theme");
     await page.keyboard.press("Enter");
@@ -177,41 +180,5 @@ test.describe("375px phone", () => {
       expect(box.height).toBeGreaterThanOrEqual(44);
     }
     expect(await input(page).evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
-  });
-
-});
-
-test.describe("neofetch typing reveal", () => {
-  const lines = (page: Page) => page.locator(".type-line");
-
-  test("text is in the server HTML", async ({ request }) => {
-    const html = await (await request.get("/")).text();
-    for (const line of neofetch) expect(html).toContain(line.value.replaceAll("&", "&amp;"));
-  });
-
-  test("types once on load, then is static", async ({ page }) => {
-    await page.goto("/");
-    expect(await lines(page).first().evaluate((el) => getComputedStyle(el).animationName)).toBe("type-in");
-    await expect(page.locator("html")).toHaveAttribute("data-typed", "");
-    expect(await lines(page).last().evaluate((el) => getComputedStyle(el).clipPath)).toBe("none");
-  });
-
-  test.describe("reduced motion", () => {
-    test.use({ reducedMotion: "reduce" });
-    test("skipped entirely", async ({ page }) => {
-      await page.goto("/");
-      for (const el of await lines(page).all()) {
-        expect(await el.evaluate((e) => [getComputedStyle(e).animationName, getComputedStyle(e).clipPath])).toEqual(["none", "none"]);
-      }
-    });
-  });
-
-  test.describe("without JavaScript", () => {
-    test.use({ javaScriptEnabled: false });
-    test("lines still end up visible", async ({ page }) => {
-      await page.goto("/");
-      await expect(page.getByText(neofetch[0].value)).toBeVisible();
-      await expect.poll(() => lines(page).last().evaluate((el) => getComputedStyle(el).clipPath), { timeout: 3000 }).toMatch(/^(none|inset\(0px 0%( 0px 0px)?\))$/);
-    });
   });
 });

@@ -2,6 +2,7 @@
 export const pages = [
   { href: "/", label: "~/", title: "Home" },
   { href: "/projects", label: "./projects", title: "Projects" },
+  { href: "/achievements", label: "./achievements", title: "Achievements" },
   { href: "/about", label: "./about", title: "About" },
   { href: "/contact", label: "./contact", title: "Contact" },
 ];
@@ -28,4 +29,13 @@ export const palette = {
     copyFailed: "Couldn’t copy — the email is",
     downloading: "Downloading CV…",
   },
+};
+
+/** Labels for the achievement photo lightbox. */
+export const lightbox = {
+  open: "open larger view",
+  close: "close",
+  previous: "Previous photo",
+  next: "Next photo",
+  counter: (i: number, n: number) => `photo ${i} of ${n}`,
 };

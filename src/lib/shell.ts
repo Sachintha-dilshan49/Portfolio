@@ -1,7 +1,8 @@
-import { neofetch, profile, skills } from "@/content/profile";
+import { hero, neofetch, profile, skills } from "@/content/profile";
 import type { ProjectLink } from "@/content/projects";
 import { shell } from "@/content/shell";
-import { wins } from "@/content/timeline";
+import { achievements } from "@/content/achievements";
+import { plain } from "@/content/case-study";
 
 /**
  * The interactive shell's interpreter: input text in, lines of output out.
@@ -28,8 +29,9 @@ const emailLine = (): Line => [{ text: profile.email, href: `mailto:${profile.em
 const commands: Record<string, (projects: ProjectLink[]) => ShellResult> = {
   whoami: () => ({
     lines: [
-      [t(profile.name, "accent"), t(` — ${profile.role}`)],
-      [t(profile.summary)],
+      [t(profile.name, "accent")],
+      [t(hero.headline)],
+      [t(hero.summary)],
       ...neofetch
         .filter((l) => shell.whoamiKeys.includes(l.key))
         .map((l): Line => [t(`${l.key.toLowerCase()}: `, "muted"), t(l.value, l.tone)]),
@@ -48,11 +50,14 @@ const commands: Record<string, (projects: ProjectLink[]) => ShellResult> = {
   }),
 
   wins: () => ({
-    lines: wins.map((w): Line => [t(w.place, "gold"), t(` — ${w.event}`), t(` · ${w.where}`, "muted")]),
+    lines: [
+      ...achievements.map((a): Line => [t(a.placement, "gold"), t(` — ${a.title}`), t(` · ${plain(a.organiser)}`, "muted")]),
+      [t("# ", "muted"), { text: shell.winsMore, href: "/achievements", kind: "internal" }],
+    ],
   }),
 
   stack: () => ({
-    lines: skills.map((s): Line => [t(`${s.group}: `, "accent"), t(s.items)]),
+    lines: skills.map((s): Line => [t(`${s.group}: `, "accent"), t(s.items.join(" · "))]),
   }),
 
   contact: () => ({
