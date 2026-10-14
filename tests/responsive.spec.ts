@@ -104,3 +104,46 @@ test.describe("screenshots at 390px", () => {
     }
   }
 });
+
+test.describe("background", () => {
+  const glowDisplay = (page: Page) =>
+    page.evaluate(() => {
+      const glow = document.querySelector(".dot-grid__glow");
+      return glow ? getComputedStyle(glow).display : null;
+    });
+
+  test("dot grid only on the home page", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".dot-grid")).toHaveCount(1);
+    for (const route of routes.filter((r) => r !== "/")) {
+      await page.goto(route);
+      await expect(page.locator(".dot-grid"), route).toHaveCount(0);
+    }
+  });
+
+  test("desktop: accent dots follow the mouse", async ({ page }) => {
+    await page.goto("/");
+    await page.mouse.move(300, 300);
+    await page.mouse.move(420, 360, { steps: 5 });
+    await expect(page.locator(".dot-grid")).toHaveAttribute("data-active", "true");
+    expect(await glowDisplay(page)).toBe("block");
+  });
+
+  test.describe("touch screens", () => {
+    test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    test("static grid only", async ({ page }) => {
+      await page.goto("/");
+      expect(await glowDisplay(page)).toBe("none");
+    });
+  });
+
+  test.describe("reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+    test("static grid only", async ({ page }) => {
+      await page.goto("/");
+      await page.mouse.move(400, 300);
+      expect(await glowDisplay(page)).toBe("none");
+      await expect(page.locator(".dot-grid")).toHaveAttribute("data-active", "false");
+    });
+  });
+});
