@@ -42,3 +42,8 @@ next-env.d.ts
 
 # originals dropped in for processing — never commit
 /_inbox/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
