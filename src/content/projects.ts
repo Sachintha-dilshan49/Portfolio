@@ -438,10 +438,10 @@ export const projects: Project[] = [
     summary:
       "HR management platform; I built the document module with separation-of-duties approvals, PDF generation and idempotent email intake.",
     team: "Team",
-    role: "Team · document management module",
+    role: "Team · top contributor",
     tags: ["backend", "fullstack"],
-    stack: ["FastAPI", "Next.js", "PostgreSQL", "SQLAlchemy", "Alembic"],
-    repo: "https://github.com/thisaruRasanjana/hrm-system-portfolio",
+    stack: ["FastAPI", "Next.js", "PostgreSQL", "SQLAlchemy", "Alembic", "APScheduler"],
+    repo: "https://github.com/Sachintha-dilshan49/hrm-system",
     featured: true,
     problem:
       "HR documents need approval chains where the requester can't approve their own request, and emailed requests must not create duplicates.",
@@ -450,6 +450,133 @@ export const projects: Project[] = [
       "Automated PDF document generation from templates",
       "IMAP background service with Message-ID idempotency",
     ],
+    caseStudy: {
+      overview: [
+        "CoreHR is a full-stack HR management system that digitises the employee lifecycle: recruitment and applicant tracking, employee records, leave, and document workflows.",
+        "It is a modular monolith — a Next.js frontend and a FastAPI backend — plus a separate AI microservice for automated candidate screening.",
+        "HR documents need approval chains where the requester can't approve their own request, and emailed requests must not create duplicate records.",
+      ],
+      architecture: {
+        caption:
+          "One FastAPI API holds the HR modules and the scheduled jobs. CV screening runs as its own service so heavy LLM inference and document parsing don't slow the main API.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "CoreHR architecture",
+          description:
+            "A Next.js frontend, including the public job portal, calls the main FastAPI API over REST. The API handles JWT and permission-based access, employees, recruitment, documents and leave, and runs APScheduler jobs guarded by PostgreSQL advisory locks. It stores data in PostgreSQL through SQLAlchemy and Alembic, sends CVs to a separate AI screening service, and an IMAP poller pulls inbound HR requests from an external inbox, de-duplicated by Message-ID.",
+          nodes: [
+            {
+              id: "web",
+              x: 16,
+              y: 24,
+              w: 200,
+              h: 100,
+              title: "Next.js frontend",
+              lines: ["App Router · TypeScript", "HR portal", "public job portal"],
+            },
+            {
+              id: "api",
+              x: 270,
+              y: 24,
+              w: 250,
+              h: 136,
+              tone: "accent",
+              title: "FastAPI main API",
+              lines: ["JWT + permission RBAC", "employees · recruitment", "documents · leave", "APScheduler jobs", "(advisory-locked)"],
+            },
+            {
+              id: "ai",
+              x: 574,
+              y: 24,
+              w: 190,
+              h: 100,
+              title: "AI screening",
+              lines: ["separate FastAPI app", "PyMuPDF · LLM APIs", "regex fallback"],
+            },
+            {
+              id: "db",
+              x: 270,
+              y: 276,
+              w: 250,
+              h: 96,
+              tone: "info",
+              title: "PostgreSQL",
+              lines: ["SQLAlchemy · Alembic", "audit tables"],
+            },
+            {
+              id: "inbox",
+              x: 574,
+              y: 276,
+              w: 190,
+              h: 96,
+              title: "external inbox",
+              lines: ["inbound HR requests"],
+            },
+          ],
+          edges: [
+            { points: [[216, 74], [266, 74]], label: ["REST"], labelAt: [241, 66], labelAnchor: "middle" },
+            { points: [[520, 74], [570, 74]], label: ["CVs"], labelAt: [545, 66], labelAnchor: "middle" },
+            { points: [[395, 160], [395, 272]] },
+            {
+              points: [[669, 276], [669, 140], [524, 140]],
+              label: ["IMAP poller", "Message-ID dedupe"],
+              labelAt: [659, 200],
+              labelAnchor: "end",
+            },
+          ],
+        },
+      },
+      role: {
+        summary: "I was the top contributor.",
+        owned: [
+          "Document management end to end: HTML/DOCX template engine with PDF generation, promotion and salary letters, separation-of-duties approval routing, and employee document requests and uploads.",
+          "An inbound email (IMAP) poller on APScheduler with duplicate prevention.",
+          "Leave module: per-role entitlements, accrual rules with caps and carry-forward, real balance calculation, and an approval workflow for medical leave reclassification.",
+          "Replaced X-Employee-ID headers with JWT auth and permission-based access.",
+          "Production hardening: removed an auth backdoor, centralised soft-delete filtering with partial unique indexes, safer file storage names, and global search with permission filtering.",
+        ],
+        timeframe: "Jan – Aug 2026",
+      },
+      decisions: [
+        {
+          title: "Separation-of-duties approval routing",
+          body: "The document routing engine prevents anyone from approving their own document and escalates administrative submissions to Super Admins.",
+        },
+        {
+          title: "Documents generated from templates",
+          body: "Standardised PDFs such as promotion letters and contracts are generated from HTML and DOCX templates.",
+        },
+        {
+          title: "Email intake that can't create duplicates",
+          body: "A background IMAP poller turns emails in an external inbox into HR requests, using the RFC 5322 Message-ID as an idempotency key so the same email never creates two records.",
+        },
+        {
+          title: "Permission-based access control",
+          body: "JWT authentication with fine-grained permissions such as recruitment:manage and document:approve, assigned dynamically, keeps duties separated across every module.",
+        },
+        {
+          title: "Scheduled jobs with advisory locks",
+          body: "Background jobs run on APScheduler, guarded by PostgreSQL advisory locks (pg_try_advisory_lock) for distributed execution.",
+        },
+        {
+          title: "AI screening kept out of the main API",
+          body: "CV screening runs as its own FastAPI service so LLM inference and document parsing don't degrade the HR API. It can use Groq (Llama 3), Gemini, OpenAI or Claude, extracts text with PyMuPDF, and falls back to deterministic regex extraction when an API is rate-limited.",
+        },
+        {
+          title: "A duplicate-safe public job portal",
+          body: "Applications through the public portal are protected by Google reCAPTCHA v2 and by duplicate-application checks: SHA-256 hashes and unique email constraints.",
+        },
+      ],
+      stackNotes: {
+        FastAPI: "the main HR API and the separate AI screening service",
+        "Next.js": "App Router with TypeScript and Tailwind CSS",
+        PostgreSQL: "also provides the advisory locks for scheduled jobs",
+        SQLAlchemy: "ORM",
+        Alembic: "schema migrations",
+        APScheduler: "background jobs, including the IMAP poller",
+      },
+    },
   },
   {
     slug: "sentrio",
