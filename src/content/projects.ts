@@ -720,6 +720,101 @@ export const projects: Project[] = [
       "Server-side quiz evaluation with controlled exam access",
       "Structured Express backend with Prisma",
     ],
+    caseStudy: {
+      overview: [
+        "A public showcase site plus a private portal for the Rahula Dancing Society. Teachers manage students, marks, notes, past papers, announcements and online quizzes; students log in to see their own results.",
+        "Three roles — Admin, Teacher and Student — share one system with JWT sign-in and role-based access. Students can only read their own marks, notes and quiz attempts.",
+      ],
+      architecture: {
+        caption:
+          "Two independent apps over a REST API. The frontend has no database access, controllers never touch Prisma directly, and utils/ has no database or HTTP imports, so the scoring and exam-access rules can be unit-tested in isolation.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "Rahula Dancing Society architecture",
+          description:
+            "A Next.js frontend with public, auth and portal route groups calls an Express API over REST with JWT bearer tokens. The API is layered route, controller, service, with authenticate and authorize middleware and pure utils for quiz scoring and access rules. It stores data in PostgreSQL through Prisma, saves uploads to a local uploads folder, and sends welcome and password-reset email through a Google Apps Script proxy.",
+          nodes: [
+            {
+              id: "web",
+              x: 16,
+              y: 24,
+              w: 220,
+              h: 120,
+              title: "Next.js frontend",
+              lines: ["(public) showcase site", "(auth) login · OTP reset", "(portal) teacher · student", "services/ fetch wrappers"],
+            },
+            {
+              id: "api",
+              x: 320,
+              y: 24,
+              w: 240,
+              h: 120,
+              tone: "accent",
+              title: "Express API",
+              lines: ["route → controller → service", "authenticate · authorize", "utils/: scoring, quiz access", "multer uploads"],
+            },
+            { id: "mail", x: 600, y: 24, w: 164, h: 80, title: "Apps Script", lines: ["email proxy", "welcome · OTP"] },
+            {
+              id: "db",
+              x: 320,
+              y: 276,
+              w: 240,
+              h: 96,
+              tone: "info",
+              title: "PostgreSQL",
+              lines: ["via Prisma", "students · marks · quizzes"],
+            },
+            { id: "files", x: 600, y: 276, w: 164, h: 96, title: "uploads/", lines: ["local disk", "≤ 50 MB per file"] },
+          ],
+          edges: [
+            { points: [[236, 74], [316, 74]], label: ["REST + JWT"], labelAt: [276, 66], labelAnchor: "middle" },
+            { points: [[560, 64], [596, 64]] },
+            { points: [[440, 144], [440, 272]], label: ["Prisma"], labelAt: [450, 212] },
+            { points: [[560, 124], [682, 124], [682, 272]], label: ["files"], labelAt: [672, 212], labelAnchor: "end" },
+          ],
+        },
+      },
+      role: {
+        summary: "I built everything.",
+        owned: [],
+        timeframe: "Feb – Aug 2026",
+      },
+      decisions: [
+        {
+          title: "Students only ever see their own data",
+          body: "Every protected route declares its own guard: authenticate verifies the JWT and authorize([roles]) gates by role. A student's marks, notes and attempts are queried by the ID inside the token, never by one the client supplies.",
+        },
+        {
+          title: "Quiz questions can't be pulled early",
+          body: "Questions are unreachable through the API until a quiz is both published and past its start time. Attempts are scored on the server and capped at one per student by a unique constraint on quiz and student.",
+        },
+        {
+          title: "Rules that can be tested in isolation",
+          body: "The backend is layered route → controller → service, and the rules that matter — quiz scoring and exam access — live in utils/ with no database or HTTP imports, covered by unit tests.",
+        },
+        {
+          title: "Quiz questions from a PDF or a photo",
+          body: "Teachers can bootstrap a quiz by uploading a PDF or an image; pdf-parse and Tesseract OCR turn it into editable text.",
+        },
+        {
+          title: "Email through a proxy",
+          body: "Welcome mail with new student credentials and 5-minute password-reset OTPs go through a Google Apps Script proxy, because the hosting tier blocks outbound SMTP ports.",
+        },
+        {
+          title: "Admin seeding that never overwrites",
+          body: "The default admin is created on startup only when that account is missing, so a changed password is never overwritten.",
+        },
+      ],
+      stackNotes: {
+        "Next.js": "Next.js 16 App Router, with route groups for the public site, auth and the portal",
+        React: "React 19",
+        Tailwind: "Tailwind CSS 4",
+        Express: "Express 5, layered route → controller → service",
+        Prisma: "Prisma 7",
+        JWT: "bearer tokens; passwords hashed with bcrypt",
+      },
+    },
   },
   {
     slug: "material-selection-assistant",
