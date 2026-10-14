@@ -174,9 +174,9 @@ export const projects: Project[] = [
     summary:
       "Five-role operations platform taking an order from store request through depot allocation, dock loading and delivery to receipt.",
     team: "SynapX",
-    role: "Team SynapX",
+    role: "Team SynapX · Loader workspace",
     tags: ["backend", "fullstack"],
-    stack: ["FastAPI", "Next.js", "Keycloak", "PostgreSQL", "Cloudflare R2"],
+    stack: ["FastAPI", "Next.js", "Keycloak", "PostgreSQL", "Alembic", "Cloudflare R2"],
     repo: "https://github.com/Sachintha-dilshan49/SynapX_WaypointLogistics",
     live: "https://synap-x-waypoint-logistics-8thu.vercel.app",
     featured: true,
@@ -188,6 +188,120 @@ export const projects: Project[] = [
       "Offline-capable loader and driver apps that sync when the connection returns",
       "Operational email sent from a queue by a separate worker",
     ],
+    caseStudy: {
+      overview: [
+        "A role-based operations platform for planning and fulfilling deliveries across Waypoint Group. It covers the full journey of an order: a store's goods request, depot allocation, dock loading, driver delivery, and the store's receiving confirmation.",
+        "Five role workspaces — System Administrator, Dispatcher, Loader, Driver and Store Manager — sit behind one sign-in. The live system holds the brief's reference data: 2 depots with 4 loading docks, 120 outlets across the Fresh, Style and Tech chains, 63 vehicles and 1,092 catalogue items.",
+        "It grew out of the team's Designathon prototype, which covered four roles and a five-stage journey (Order, Plan, Load, Deliver, Receive). The built system keeps that journey and adds an admin role, a dock hand-off between planning and loading, and operational email.",
+      ],
+      architecture: {
+        caption:
+          "Next.js frontend → FastAPI API → PostgreSQL on Neon, with Keycloak for sign-in and Cloudflare R2 for photos. The email worker runs as a separate process outside Vercel, because it needs to run continuously.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "Waypoint Logistics architecture",
+          description:
+            "A Next.js frontend with five role workspaces calls a FastAPI API over REST. The API verifies sign-in tokens with Keycloak, stores photos in Cloudflare R2, and reads and writes PostgreSQL on Neon. A separate email worker reads queued messages from the email_outbox table and sends them over SMTP.",
+          nodes: [
+            {
+              id: "web",
+              x: 16,
+              y: 24,
+              w: 210,
+              h: 120,
+              title: "Next.js frontend",
+              lines: ["5 role workspaces", "admin · dispatcher · loader", "driver · store", "offline queue → sync"],
+            },
+            {
+              id: "api",
+              x: 290,
+              y: 24,
+              w: 230,
+              h: 120,
+              tone: "accent",
+              title: "FastAPI API",
+              lines: ["/api/v1 · on Vercel", "allocation constraints", "role APIs incl. /loader", "Alembic migrations"],
+            },
+            { id: "kc", x: 580, y: 24, w: 184, h: 64, title: "Keycloak", lines: ["one sign-in, every role"] },
+            { id: "r2", x: 580, y: 104, w: 184, h: 76, title: "Cloudflare R2", lines: ["photos: flags,", "proof of delivery"] },
+            {
+              id: "db",
+              x: 290,
+              y: 276,
+              w: 230,
+              h: 96,
+              tone: "info",
+              title: "PostgreSQL (Neon)",
+              lines: ["orders · runs · stops", "email_outbox"],
+            },
+            {
+              id: "mail",
+              x: 600,
+              y: 276,
+              w: 164,
+              h: 96,
+              title: "email worker",
+              lines: ["separate process", "outbox → SMTP"],
+            },
+          ],
+          edges: [
+            { points: [[226, 84], [286, 84]], label: ["REST"], labelAt: [256, 76], labelAnchor: "middle" },
+            { points: [[520, 52], [576, 52]], label: ["tokens"], labelAt: [548, 44], labelAnchor: "middle" },
+            { points: [[520, 128], [576, 128]], label: ["photos"], labelAt: [548, 120], labelAnchor: "middle" },
+            { points: [[405, 144], [405, 272]] },
+            { points: [[600, 324], [524, 324]], label: ["reads"], labelAt: [562, 316], labelAnchor: "middle" },
+          ],
+        },
+      },
+      role: {
+        summary: "Team of ~10. I built the Loader workspace, one of the five role workspaces, end to end.",
+        owned: [
+          "Backend: data models and Alembic migrations for delivery runs, stops, plan revisions, loader issues, checks and activity.",
+          "The /loader API covers loader sessions and the dock-wide queue, the loading checklist (check / uncheck / re-check), issue flagging, and release with an undo window and release lock. It also handles plan-change detection with acknowledge/takeover, and a run activity log and dock activity feed.",
+          "Idempotent writes using client_action_id, so duplicate requests are rejected.",
+          "Integration with the dispatcher and driver flows: loader runs created from dispatch trips, order status updates on loading and release, and final shortfall numbers for the Store Manager.",
+          "Keycloak sign-in for loaders (replacing PINs) and flag-photo upload to Cloudflare R2.",
+          "Frontend: the loader checklist, plan-diff and review screens.",
+          "Domain, API and seed-fidelity tests; the loader API contract docs; a one-command demo seed.",
+        ],
+        timeframe: "Late Sep – early Oct 2026",
+      },
+      decisions: [
+        {
+          title: "One sign-in for every role, including the loader",
+          body: "The prototype had loaders pick their name and enter a PIN on a shared dock tablet. Every role now signs in through Keycloak, so the system has one login, one session model and one audit trail. To keep the shared-tablet use, the loader workspace keeps Switch user and signs out automatically after 10 minutes of inactivity.",
+        },
+        {
+          title: "A dock hand-off before loading starts",
+          body: "The dispatcher allocates a vehicle and sends it to a dock; the driver confirms arrival; only then does the run appear in the loaders' queue. Pick locks a run to one loader, so loading can't start before the truck is at the dock and two loaders can't work the same run.",
+        },
+        {
+          title: "Problems block release, and release can be undone",
+          body: "A loader can flag an order on the checklist (for example as short). The dispatcher resolves it under Exceptions, and the run can't be released until they decide. After Confirm & release, the release can be undone for about 10 seconds.",
+        },
+        {
+          title: "Vehicle allocation checked against real constraints",
+          body: "The allocation drawer recommends vehicles and checks each against capacity, temperature, depot, availability, fuel and route timing. A request that mixes chilled and ambient goods is split into two orders, one per temperature zone.",
+        },
+        {
+          title: "Offline-capable loader and driver apps",
+          body: "In the loader or driver workspace the device can lose its network and keep working. Queued actions sync when the connection returns.",
+        },
+        {
+          title: "Email from an outbox, sent by a separate worker",
+          body: "Operational email to dispatchers, store managers and admins is queued in email_outbox and sent by a worker outside Vercel, because it has to run continuously. Photos go to Cloudflare R2 because serverless functions can't keep files between requests.",
+        },
+      ],
+      stackNotes: {
+        FastAPI: "the API under /api/v1, deployed on Vercel",
+        "Next.js": "five role workspaces; loader and driver work offline",
+        Keycloak: "one sign-in for every role; admin user changes are applied in Keycloak too",
+        PostgreSQL: "hosted on Neon",
+        Alembic: "migrations; only the DB lead applies them to the shared database",
+        "Cloudflare R2": "photo storage, required on Vercel where functions can't keep files",
+      },
+    },
   },
   {
     slug: "aaac",
