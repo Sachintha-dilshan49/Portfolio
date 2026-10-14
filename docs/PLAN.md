@@ -1,7 +1,7 @@
 # Portfolio — build & deployment plan
 
 Personal portfolio for internship and job applications. CLI / terminal look,
-dark + light themes, code-spotlight pointer effect, one case study per project,
+dark + light themes, a calm dot-grid background on the home page, one case study per project,
 all built from the same template.
 
 ## 1. Architecture
@@ -33,9 +33,8 @@ the site is just files on a CDN — fast and effectively free to run.
 ```
 src/
   app/                 routes: /, /projects, /projects/[slug], /about, /contact
-  components/          terminal window, neofetch, nav, theme toggle, spotlight…
+  components/          terminal window, neofetch, nav, theme toggle, dot grid, border glow…
   content/             profile.ts · projects.ts · timeline.ts   ← edit these
-  lib/                 helpers (code-field generator)
 public/                me.jpg (photo), cv.pdf (public CV)
 docs/PLAN.md           this file
 CLAUDE.md              rules for Claude Code (imports AGENTS.md)
@@ -101,6 +100,7 @@ project has one, the template falls back to its `problem`, `role` and
 - [ ] Vercel Web Analytics
 - [x] Fully responsive at 320–1024px, portrait and landscape: phone nav, stacked hero, vertical diagrams, 44px targets, safe areas, touch-aware spotlight
 - [x] Playwright responsive test (overflow + touch targets) as a separate CI job
+- [x] Calmer background: code-text spotlight replaced by a home-only dot grid (mouse-only accent glow, static on touch / reduced motion) and a cursor-following border glow on cards and terminal windows
 - [ ] Test on real phones, keyboard-only, screen reader, reduced motion
 
 **Later / optional**

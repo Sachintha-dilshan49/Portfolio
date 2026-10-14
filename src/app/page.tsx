@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DotGrid } from "@/components/dot-grid";
 import { Neofetch } from "@/components/neofetch";
 import { ProjectCard } from "@/components/project-card";
 import { Prompt } from "@/components/terminal";
@@ -14,6 +15,7 @@ export default function Home() {
 
   return (
     <>
+      <DotGrid />
       <section className="flex flex-col gap-5 pb-16 pt-6">
         <Neofetch />
         {/* Two-column grid of full-width buttons on phones, a row from sm up. */}

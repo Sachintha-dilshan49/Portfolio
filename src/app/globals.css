@@ -17,7 +17,8 @@
   --ok: #3ddc97;
   --danger: #ff8a7a;
   --info: #8fb4ff;
-  --faint: #111820;
+  --dot: #1b2430;
+  --dot-glow: #7ce7b4;
   color-scheme: dark;
 }
 
@@ -36,7 +37,8 @@
   --ok: #0e7a4c;
   --danger: #b23a2a;
   --info: #1f4fbf;
-  --faint: #ebe7df;
+  --dot: #d8d3c8;
+  --dot-glow: #0e7a4c;
   color-scheme: light;
 }
 
@@ -98,64 +100,105 @@ body {
   outline-offset: 3px;
 }
 
-/* ── Code spotlight background ─────────────────────────────── */
-.code-spotlight {
+/* ── Dot grid, home page only (components/dot-grid.tsx) ───── */
+.dot-grid {
   position: fixed;
   inset: 0;
-  z-index: 0;
-  overflow: hidden;
+  /* Below the page content, inside the page wrapper's stacking context. */
+  z-index: -1;
   pointer-events: none;
-  user-select: none;
+  background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.6px);
+  background-size: 24px 24px;
 }
 
-.code-field {
+/* Accent dots, revealed softly around the cursor (no hard edge). */
+.dot-grid__glow {
   position: absolute;
   inset: 0;
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.7;
-  white-space: pre;
-  color: var(--faint);
-}
-
-.code-field--glow {
-  color: var(--accent);
+  background-image: radial-gradient(circle at center, var(--dot-glow) 1.3px, transparent 1.9px);
+  background-size: 24px 24px;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease;
   -webkit-mask-image: radial-gradient(
-    circle 200px at var(--mx, 50%) var(--my, 50%),
+    circle 180px at var(--mx, -999px) var(--my, -999px),
     #000 0%,
-    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.7) 30%,
+    rgba(0, 0, 0, 0.35) 55%,
+    rgba(0, 0, 0, 0.1) 80%,
     transparent 100%
   );
   mask-image: radial-gradient(
-    circle 200px at var(--mx, 50%) var(--my, 50%),
+    circle 180px at var(--mx, -999px) var(--my, -999px),
     #000 0%,
-    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.7) 30%,
+    rgba(0, 0, 0, 0.35) 55%,
+    rgba(0, 0, 0, 0.1) 80%,
     transparent 100%
   );
 }
 
-.code-spotlight[data-active="true"] .code-field--glow {
-  opacity: 1;
+.dot-grid[data-active="true"] .dot-grid__glow {
+  opacity: 0.85;
 }
 
-/* Smaller field below md, full field from md up. */
-.code-field--sm {
-  font-size: 12px;
-}
-
-.code-field--lg {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .code-field--sm {
+/* Touch screens and reduced motion: just the static faint grid. */
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .dot-grid__glow {
     display: none;
   }
-  .code-field--lg {
-    display: block;
+}
+
+/* ── Border glow on cards and terminal windows (components/border-glow.tsx) ── */
+.glow-border {
+  position: relative;
+}
+
+/* A ring on the element's border, lit by a radial gradient centred on the cursor. */
+.glow-border::before,
+.glow-border::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(170px circle at var(--gx, 50%) var(--gy, 50%), var(--accent), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Crisp 1.5px line on the border… */
+.glow-border::before {
+  inset: -1px;
+  padding: 1.5px;
+}
+
+/* …plus a blurred copy for the soft glow. */
+.glow-border::after {
+  inset: -3px;
+  padding: 5px;
+  filter: blur(6px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glow-border:hover::before {
+    opacity: 1;
+  }
+  .glow-border:hover::after {
+    opacity: 0.5;
+  }
+}
+
+/* Reduced motion: a plain, static accent border on hover. */
+@media (prefers-reduced-motion: reduce) {
+  .glow-border::before {
+    background: var(--accent);
+  }
+  .glow-border::after {
+    display: none;
   }
 }
 
@@ -243,8 +286,5 @@ body {
   }
   .type-line {
     opacity: 1;
-  }
-  .code-field--glow {
-    display: none;
   }
 }
