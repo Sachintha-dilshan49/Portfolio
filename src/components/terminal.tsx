@@ -2,8 +2,9 @@ import type { ReactNode } from "react";
 
 export function TerminalWindow({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-[14px] border border-border bg-surface">
-      <div className="flex items-center gap-2 border-b border-border bg-chrome px-4 py-3">
+    // No overflow-hidden: it would clip the border glow, so the title bar rounds its own corners.
+    <div className="glow-border rounded-[14px] border border-border bg-surface">
+      <div className="flex items-center gap-2 rounded-t-[13px] border-b border-border bg-chrome px-4 py-3">
         <span className="size-3 rounded-full bg-[#ff6b5b]" />
         <span className="size-3 rounded-full bg-[#f5c26b]" />
         <span className="size-3 rounded-full bg-[#3ddc97]" />

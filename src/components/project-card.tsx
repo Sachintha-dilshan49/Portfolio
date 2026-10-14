@@ -6,9 +6,9 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface text-text no-underline transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-accent"
+      className="glow-border group flex flex-col rounded-xl border border-line bg-surface text-text no-underline"
     >
-      <div className="flex items-center justify-between gap-2 border-b border-line bg-chrome px-4 py-2.5 text-xs text-muted">
+      <div className="flex items-center justify-between gap-2 rounded-t-[11px] border-b border-line bg-chrome px-4 py-2.5 text-xs text-muted">
         <span className="min-w-0 truncate">{project.slug}/</span>
         <span className={`shrink-0 ${solo ? "text-accent" : "text-info"}`}>{solo ? "solo" : project.team === "Team" ? "team" : `team ${project.team}`}</span>
       </div>

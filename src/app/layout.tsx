@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/jetbrains-mono";
 import "@fontsource-variable/space-grotesk";
 import "./globals.css";
-import { CodeSpotlight } from "@/components/code-spotlight";
+import { BorderGlow } from "@/components/border-glow";
 import { Nav } from "@/components/nav";
 import { themeScript } from "@/components/theme-toggle";
 import { profile } from "@/content/profile";
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <CodeSpotlight />
+        <BorderGlow />
         <div className="page-shell relative z-10 mx-auto max-w-[1100px]">
           <Nav />
           <main id="main">{children}</main>
