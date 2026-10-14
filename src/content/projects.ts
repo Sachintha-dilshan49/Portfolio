@@ -584,9 +584,9 @@ export const projects: Project[] = [
     summary:
       "Browser extension that detects social-engineering and phishing attacks aimed at Sri Lankan banking users.",
     team: "Mora Vortex",
-    role: "Team · AI reasoning layer",
+    role: "Team · AI agent core",
     tags: ["ai", "security"],
-    stack: ["JavaScript", "Chrome MV3", "Groq", "Llama 3.3", "IndexedDB"],
+    stack: ["JavaScript", "Chrome MV3", "Groq", "Llama 3.3", "Gemini", "Claude", "IndexedDB"],
     repo: "https://github.com/Sachintha-dilshan49/sentrio",
     badge: "2nd Runner-Up · Aurora 2026",
     problem:
@@ -596,6 +596,112 @@ export const projects: Project[] = [
       "Evidence grounding from trusted external sources",
       "2nd Runner-Up at Aurora 2026, University of Sri Jayewardenepura",
     ],
+    caseStudy: {
+      overview: [
+        "Sentrio is an agentic AI browser extension that detects social-engineering and phishing attacks aimed at Sri Lankan banking users. Team Mora Vortex built it for Aurora 2026, where it placed 2nd Runner-Up.",
+        "Phishing pages targeting local bank customers are convincing and short-lived, so static blocklists miss them.",
+        "It works in layers: local checks that run on every page, AI reasoning over the signals they raise, a personal trust profile that learns, and an alert overlay and popup that show the verdict.",
+      ],
+      architecture: {
+        caption:
+          "One Manifest V3 extension. The content script runs on every page because phishing can appear on any domain; the background worker does the AI reasoning and fetches grounding evidence over HTTPS.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "Sentrio architecture",
+          description:
+            "Layer 1 local checks run in a content script on every page and send signals to the background worker. The worker's AI agent builds a reasoning prompt for the LLM provider — Groq by default, or Gemini or Claude — and fetches grounding evidence from official bank sites, RDAP and crt.sh. It reads and updates the personal trust profile in IndexedDB, and sends its verdict to the alert overlay and popup.",
+          nodes: [
+            { id: "l1", x: 16, y: 24, w: 200, h: 80, title: "Layer 1 · local", lines: ["content script", "on every page"] },
+            {
+              id: "worker",
+              x: 290,
+              y: 24,
+              w: 230,
+              h: 120,
+              tone: "accent",
+              title: "background worker",
+              lines: ["Layer 2 · AI agent", "prompt builder", "response parser", "analyseThreats"],
+            },
+            { id: "llm", x: 574, y: 24, w: 190, h: 80, title: "LLM provider", lines: ["Groq (default)", "Gemini · Claude"] },
+            { id: "ui", x: 16, y: 276, w: 200, h: 96, title: "Layer 4 · alerts", lines: ["overlay on the page", "popup · toolbar badge"] },
+            {
+              id: "trust",
+              x: 290,
+              y: 276,
+              w: 230,
+              h: 96,
+              tone: "info",
+              title: "Layer 3 · trust profile",
+              lines: ["IndexedDB, per origin"],
+            },
+            {
+              id: "evidence",
+              x: 574,
+              y: 276,
+              w: 190,
+              h: 96,
+              title: "grounding evidence",
+              lines: ["official bank sites", "RDAP · crt.sh"],
+            },
+          ],
+          edges: [
+            { points: [[216, 64], [286, 64]], label: ["signals"], labelAt: [251, 56], labelAnchor: "middle" },
+            { points: [[520, 64], [570, 64]], label: ["prompt"], labelAt: [545, 56], labelAnchor: "middle" },
+            {
+              points: [[520, 124], [669, 124], [669, 272]],
+              label: ["fetch over", "HTTPS"],
+              labelAt: [659, 196],
+              labelAnchor: "end",
+            },
+            { points: [[405, 144], [405, 272]], label: ["read / update"], labelAt: [415, 212] },
+            { points: [[330, 144], [330, 210], [116, 210], [116, 272]], label: ["verdict"], labelAt: [223, 202], labelAnchor: "middle" },
+          ],
+        },
+      },
+      role: {
+        summary:
+          "I built the AI agent core. A teammate added the Groq provider and the evidence-grounding lookups (RDAP, crt.sh).",
+        owned: [
+          "A multi-provider API client (Gemini and Claude).",
+          "The prompt builder that turns threat signals into reasoning prompts.",
+          "A response parser that validates the AI output, and a fallback handler for API errors.",
+          "The analyseThreats orchestrator with a network-availability check, plus a manual test suite.",
+        ],
+        timeframe: "May – Jun 2026",
+      },
+      decisions: [
+        {
+          title: "Layered detection",
+          body: "Layer 1 runs local checks in a content script on every page. Layer 2 reasons over the signals they raise with an LLM, Layer 3 keeps a personal trust profile that learns, and Layer 4 shows the result as an overlay and in the popup.",
+        },
+        {
+          title: "A swappable AI provider",
+          body: "Layer 2 runs on Groq (llama-3.3-70b-versatile) by default — free and fast for development and the demo. One config setting switches it to Gemini or Claude.",
+        },
+        {
+          title: "Verdicts grounded in evidence",
+          body: "The background worker fetches evidence from official bank sites, RDAP and crt.sh over HTTPS to ground the AI's reasoning in trusted external sources.",
+        },
+        {
+          title: "AI output is validated, with a fallback",
+          body: "A response parser validates what the model returns, API errors go to a fallback handler, and the analyseThreats orchestrator checks network availability.",
+        },
+        {
+          title: "Minimum permissions",
+          body: "Only activeTab and host permissions for all URLs, because phishing can appear on any domain. No storage or notifications permission: the trust profile lives in per-origin IndexedDB, and status shows on the toolbar badge and overlay.",
+        },
+      ],
+      stackNotes: {
+        JavaScript: "bundled into the extension's dist/ folder",
+        "Chrome MV3": "an unpacked Manifest V3 extension for any Chromium browser",
+        Groq: "default provider, added by a teammate",
+        "Llama 3.3": "llama-3.3-70b-versatile on Groq",
+        Gemini: "alternative provider through the multi-provider client",
+        Claude: "alternative provider through the multi-provider client",
+        IndexedDB: "per-origin trust profile, so no storage permission is needed",
+      },
+    },
   },
   {
     slug: "rahula-dancing-society",
