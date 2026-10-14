@@ -11,11 +11,12 @@ Tick items off there as they are finished.
 ## Commands
 - `npm run dev` — dev server on http://localhost:3000
 - `npm run lint` · `npm run typecheck` · `npm run build` — all three must pass before committing (CI runs the same)
-- `npm run test:e2e` — Playwright, against the production build (run `npm run build` first): no horizontal overflow on any route at 320/375/390/768 + phone landscape, 44px touch targets, 16px inputs; also saves 390px screenshots of every route in both themes to `test-results/screenshots/` (git-ignored). CI runs it as a separate job.
+- `npm run test:e2e` — Playwright, against the production build (run `npm run build` first): no horizontal overflow on any route at 320/375/390/768 + phone landscape, 44px touch targets, 16px inputs; also saves 390px screenshots of every route in both themes to `test-results/screenshots/` (git-ignored). `tests/interactive.spec.ts` covers the home-page shell (chips, typing, history, Tab, easter eggs, CV download), the ⌘K palette (Ctrl+K, keyboard, focus return) and the neofetch typing reveal (reduced motion, no-JS). CI runs it as a separate job.
 
 ## Where things live
 - `src/content/` — ALL text and data (profile, projects, timeline). Change content here, never hard-code it in components.
-- `src/components/` — UI pieces (terminal window, neofetch, nav, theme toggle, dot grid, border glow…)
+- `src/components/` — UI pieces (terminal window, neofetch, nav, theme toggle, dot grid, border glow, shell, command palette…)
+- `src/lib/` — shell interpreter (pure), fuzzy matcher, browser actions shared by the shell and the palette
 - `src/app/` — routes: `/`, `/projects`, `/projects/[slug]`, `/about`, `/contact`
 - `public/` — `me.jpg` (photo) and `cv.pdf` (public CV). public/cv.pdf may include referee details — the referees have consented.
 

@@ -27,6 +27,8 @@ All content lives in `src/content/`:
 - `profile.ts` — name, links, neofetch lines, skills, certifications
 - `projects.ts` — every project card and case study
 - `timeline.ts` — wins and the `git log` timeline on About
+- `shell.ts` — words for the interactive shell on the home page (commands, easter eggs)
+- `site.ts` — pages (nav + command palette) and the ⌘K palette labels
 
 Photo: put `me.jpg` in `public/` and set `photo: "/me.jpg"` in `profile.ts`.
 CV: put a public version at `public/cv.pdf`.

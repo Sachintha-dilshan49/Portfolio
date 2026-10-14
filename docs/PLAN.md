@@ -33,8 +33,9 @@ the site is just files on a CDN — fast and effectively free to run.
 ```
 src/
   app/                 routes: /, /projects, /projects/[slug], /about, /contact
-  components/          terminal window, neofetch, nav, theme toggle, dot grid, border glow…
-  content/             profile.ts · projects.ts · timeline.ts   ← edit these
+  components/          terminal window, neofetch, nav, theme toggle, dot grid, border glow, shell, ⌘K palette…
+  lib/                 shell interpreter, fuzzy matcher, browser actions (download CV, copy, theme)
+  content/             profile.ts · projects.ts · timeline.ts · shell.ts · site.ts   ← edit these
 public/                me.jpg (photo), cv.pdf (public CV)
 docs/PLAN.md           this file
 CLAUDE.md              rules for Claude Code (imports AGENTS.md)
@@ -89,9 +90,10 @@ project has one, the template falls back to its `problem`, `role` and
 `todo("…")`, which renders a visible `[TODO: …]` — never guessed.
 
 **Phase 3 — interactions**
-- [ ] ⌘K command palette (jump to project, copy email, download CV)
+- [x] ⌘K / Ctrl+K command palette: fuzzy search over pages, projects and actions (copy email, download CV, toggle theme, GitHub, LinkedIn); native `<dialog>`, no library; ⌘K button in the nav on phones too
 - [ ] Text-scramble headings, `cd` page transitions, magnetic buttons
-- [ ] Interactive shell section (`whoami`, `projects`, `wins`…) + easter eggs
+- [x] Interactive shell section (`whoami`, `projects`, `wins`…) + easter eggs — auto-runs `whoami` on first view; chips + input with history and Tab completion; output from `src/content/`, announced via an aria-live region
+- [x] Neofetch typing reveal: CSS-only (~1s, once per visit), text stays in the HTML, skipped under reduced motion
 - [ ] Contact form → `/api/contact` Route Handler → Resend, with honeypot + rate limit
 
 **Phase 4 — launch & polish**

@@ -2,19 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ProjectLink } from "@/content/projects";
+import { pages } from "@/content/site";
+import { CommandPalette } from "./command-palette";
 import { ThemeToggle } from "./theme-toggle";
 
-const links = [
-  { href: "/projects", label: "./projects" },
-  { href: "/about", label: "./about" },
-  { href: "/contact", label: "./contact" },
-];
+const links = pages.filter((p) => p.href !== "/");
 
 /**
- * Phones: brand + theme toggle on the first row, the three links as a
+ * Phones: brand + ⌘K + theme toggle on the first row, the three links as a
  * full-width row of 44px buttons underneath. sm and up: one line.
  */
-export function Nav() {
+export function Nav({ projects }: { projects: ProjectLink[] }) {
   const pathname = usePathname();
 
   return (
@@ -43,7 +42,10 @@ export function Nav() {
           );
         })}
       </ul>
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <CommandPalette projects={projects} />
+        <ThemeToggle />
+      </div>
     </nav>
   );
 }

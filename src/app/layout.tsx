@@ -6,6 +6,7 @@ import { BorderGlow } from "@/components/border-glow";
 import { Nav } from "@/components/nav";
 import { themeScript } from "@/components/theme-toggle";
 import { profile } from "@/content/profile";
+import { projectLinks } from "@/content/projects";
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
@@ -45,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <BorderGlow />
         <div className="page-shell relative z-10 mx-auto max-w-[1100px]">
-          <Nav />
+          <Nav projects={projectLinks} />
           <main id="main">{children}</main>
           <footer className="mt-10 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-line pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] text-[13px] text-muted">
             <span>© {profile.name}</span>
