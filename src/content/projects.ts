@@ -309,7 +309,7 @@ export const projects: Project[] = [
     summary:
       "Fairness-aware virtual waiting room that adapts admission windows and page payloads to each client's link quality.",
     team: "Team",
-    role: "Team project",
+    role: "Team · estimator, delivery, client SDK",
     tags: ["backend", "ai"],
     stack: ["Python", "FastAPI", "Redis", "LightGBM", "Docker"],
     repo: "https://github.com/Sachintha-dilshan49/AAAC",
@@ -322,6 +322,115 @@ export const projects: Project[] = [
       "Client SDK and live dashboard",
       "Docker-based network emulation with automated evaluation",
     ],
+    caseStudy: {
+      overview: [
+        "AAAC (Access-Aware Admission Control) is a virtual waiting room that stays fair to users on slow connections.",
+        "Conventional waiting rooms give every user the same admission window and the same page. Users on slow, lossy links time out, go to the back of the queue and retry at the same cost, so they are systematically excluded. AAAC adapts the queue to each client's link to close that gap.",
+        "The key metric is the completion gap: Δ = completion rate of HIGH-bandwidth clients − completion rate of LOW-bandwidth clients.",
+      ],
+      architecture: {
+        caption:
+          "Three services — admission (with Redis), delivery and a mock origin — plus three client containers whose networks are shaped to HIGH, MEDIUM and LOW links with tc netem. Run modes compare no queue, a conventional waiting room and the full system.",
+        diagram: {
+          width: 780,
+          height: 392,
+          title: "AAAC architecture",
+          description:
+            "Three client containers, shaped to high, medium and low links and using the client SDK, join the queue at the admission service on port 8000, which uses Redis and holds the adaptive window, the link estimator, re-queueing and AIMD rate control. Admitted clients fetch a page sized to their link from the delivery service on port 8001, which fetches from the mock origin on port 8002. Origin health feeds back into the admission rate.",
+          nodes: [
+            {
+              id: "clients",
+              x: 16,
+              y: 24,
+              w: 200,
+              h: 120,
+              stack: 2,
+              title: "clients × 3",
+              lines: ["HIGH · MEDIUM · LOW", "shaped with tc netem", "client SDK"],
+            },
+            {
+              id: "admission",
+              x: 300,
+              y: 24,
+              w: 230,
+              h: 136,
+              tone: "accent",
+              title: "admission :8000",
+              lines: ["queue + adaptive window", "link estimator", "non-regressive re-queue", "AIMD rate control", "Redis"],
+            },
+            {
+              id: "delivery",
+              x: 300,
+              y: 276,
+              w: 230,
+              h: 96,
+              tone: "accent",
+              title: "delivery :8001",
+              lines: ["page variant per link", "411 KB → 5 KB → 2 KB"],
+            },
+            { id: "origin", x: 590, y: 276, w: 174, h: 96, tone: "info", title: "origin :8002", lines: ["mock origin"] },
+          ],
+          edges: [
+            { points: [[232, 64], [296, 64]], label: ["join"], labelAt: [264, 56], labelAnchor: "middle" },
+            { points: [[296, 112], [232, 112]], label: ["admit"], labelAt: [264, 104], labelAnchor: "middle" },
+            { points: [[116, 160], [116, 324], [296, 324]], label: ["fetch page"], labelAt: [126, 244] },
+            { points: [[530, 324], [586, 324]], label: ["fetch"], labelAt: [558, 316], labelAnchor: "middle" },
+            {
+              points: [[677, 276], [677, 92], [534, 92]],
+              label: ["origin health", "→ admission rate"],
+              labelAt: [667, 200],
+              labelAnchor: "end",
+            },
+          ],
+        },
+      },
+      role: {
+        summary:
+          "My part is listed below; teammates built the admission-control core and the evaluation framework.",
+        owned: [
+          "The link-quality estimator: LightGBM model, synthetic training data, training pipeline and model card.",
+          "The in-band link measurement probe.",
+          "The client SDK: input-support fallback, asymmetric clamping, a test harness, payload variants and sub-resource fetching.",
+          "The adaptive payload delivery service with capacity benchmarking.",
+          "The admission dashboard layout.",
+        ],
+        timeframe: "Sep 2026",
+      },
+      decisions: [
+        {
+          title: "Classify each client's link from its own traffic",
+          body: "A LightGBM classifier labels each client HIGH, MEDIUM or LOW from its own traffic, and the window and payload adapt to that class. The results report notes the classifier was rarely exercised in the evaluated runs.",
+        },
+        {
+          title: "Slower links get more time",
+          body: "The admission window adapts to the link, so a client on a slow connection gets longer to finish instead of the same window as everyone else.",
+        },
+        {
+          title: "Same content, lighter page",
+          body: "Slower links get a lighter page with the same content: 411 KB for fast links, 5 KB and 2 KB for slower ones.",
+        },
+        {
+          title: "Timing out doesn't cost your place",
+          body: "A non-regressive re-queue: a client that times out keeps its place and gets a cheaper retry, instead of going to the back of the queue.",
+        },
+        {
+          title: "Admission rate follows origin health",
+          body: "AIMD rate control (additive increase, multiplicative decrease) makes the admission rate track origin health, so the server never collapses.",
+        },
+        {
+          title: "A pre-registered, reproducible evaluation",
+          body: "A Docker testbed with network-shaped client containers runs three modes — no queue, a conventional waiting room, and AAAC — over several seeds, then generates a results report.",
+          evidence:
+            "3 seeds × 3 modes, 140 clients per run: mean completion gap 0.986 for the conventional waiting room vs 0.027 for AAAC, aggregate completion 0.655 vs 0.991, zero origin errors (p = 0.0005). Limitations: 3 of 5 planned seeds and a scaled-down load.",
+        },
+      ],
+      stackNotes: {
+        Python: "Python 3.11",
+        Redis: "used by the admission service",
+        LightGBM: "link-quality classifier (HIGH / MEDIUM / LOW)",
+        Docker: "testbed with network-shaped client containers (tc netem)",
+      },
+    },
   },
   {
     slug: "corehr",
