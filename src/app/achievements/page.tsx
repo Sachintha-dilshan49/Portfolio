@@ -66,6 +66,16 @@ function AchievementCard({ a }: { a: Achievement }) {
               → {a.project.label}
             </Link>
           )}
+          {a.repo && (
+            <a
+              href={a.repo.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center self-start text-sm text-accent"
+            >
+              → {a.repo.label} ↗
+            </a>
+          )}
         </div>
         {hasPhotos && <Gallery photos={a.photos} title={a.title} />}
       </div>

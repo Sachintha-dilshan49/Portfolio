@@ -23,6 +23,8 @@ export type Achievement = {
   description: Text[];
   /** Related case study, when there is one. */
   project?: { label: string; href: string };
+  /** Source code, when there is no case study on this site. */
+  repo?: { label: string; href: string };
   stack?: string[];
   photos: GalleryPhoto[];
 };
@@ -44,11 +46,12 @@ export const achievements: Achievement[] = [
     event: "Inter-university communication technology ideathon · University of Moratuwa",
     organiser: "IEEE Communications Society Student Branch Chapter",
     year: "2026",
-    team: todo("team name — Mora Vortex or Vortex?"),
+    team: "Mora Vortex",
     description: [
       "Networking track, with a software-based solution. Proposal-first: teams of three were shortlisted on their proposals, then built them.",
-      todo("our solution — a disaster-resilient mesh messaging system? Confirm, or describe it in a line"),
+      "Our project, AAAC (Access-Aware Admission Control), is a fairness-aware virtual waiting room that adapts admission windows and page payloads to each client’s link quality.",
     ],
+    project: { label: "AAAC case study", href: "/projects/aaac" },
     photos: gallery("comfix", [
       "Five people on a stage in front of a projector screen, holding a large ComFix ’26 presentation cheque that reads “First Runners Up · LKR 30,000”.",
     ]),
@@ -57,7 +60,7 @@ export const achievements: Achievement[] = [
     slug: "aurora",
     title: "Aurora 2026",
     placement: "2nd Runner-Up",
-    event: todo("event type, e.g. AI ideathon"),
+    event: "University AI Ideathon",
     organiser: "University of Sri Jayewardenepura",
     year: "2026",
     team: "Mora Vortex",
@@ -81,6 +84,7 @@ export const achievements: Achievement[] = [
       "Our project, Pol Mila, is an explainable-AI fair-price benchmarking tool for coconut smallholders in Sri Lanka.",
     ],
     stack: ["Python", "XGBoost", "LightGBM", "SHAP", "FastAPI", "Next.js", "PostgreSQL"],
+    repo: { label: "Pol Mila on GitHub", href: "https://github.com/codesplash26-ai/mora-vortex" },
     photos: gallery("codesplash", [
       "Six people in matching black T-shirts and lanyards on the Codesplash stage, holding a certificate, behind large “CODESPLASH” letters.",
     ]),
@@ -90,7 +94,7 @@ export const achievements: Achievement[] = [
     title: "OctWave 3.0 Kaggle Hackathon",
     placement: "1st place, Round 1",
     event: "Image-classification challenge on Kaggle",
-    organiser: todo("organiser"),
+    organiser: "IEEE Student Branch, University of Moratuwa",
     year: todo("year — the old About timeline said 2025"),
     team: "Mora Vortex",
     description: [
