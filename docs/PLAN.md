@@ -100,7 +100,7 @@ project has one, the template falls back to its `problem`, `role` and
 - [x] Home hero: login sequence (~2.4s, once per session, click/key skips, no layout shift, reduced motion → final state) then name, headline, summary and View projects · Download CV · Contact; neofetch lines and swatches removed
 - [x] /achievements: cards (placement, event, organiser, year, team, description, case-study link) with photo galleries + accessible lightbox; extra-curricular cards; in nav, sitemap and ⌘K
 - [x] About: bio → education → skill cards → certification cards → Download CV; wins and git-log timeline removed, "See achievements →" link
-- [ ] Fill the remaining [TODO]s (OctWave 3.0 year, certification years + credential links)
+- [ ] Fill the remaining [TODO]s (certification years + credential links)
 - [ ] Contact form → `/api/contact` Route Handler → Resend, with honeypot + rate limit
 
 **Phase 4 — launch & polish**

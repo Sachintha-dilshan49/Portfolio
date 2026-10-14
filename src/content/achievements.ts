@@ -1,5 +1,5 @@
 import { photoFiles, type PhotoFile } from "./achievement-photos.generated";
-import { todo, type Text } from "./case-study";
+import type { Text } from "./case-study";
 
 /**
  * Achievements page (/achievements), the home-page wins strip and the shell's
@@ -95,7 +95,7 @@ export const achievements: Achievement[] = [
     placement: "1st place, Round 1",
     event: "Image-classification challenge on Kaggle",
     organiser: "IEEE Student Branch, University of Moratuwa",
-    year: todo("year — the old About timeline said 2025"),
+    year: "2026",
     team: "Mora Vortex",
     description: [
       "Classifying frames from Tom & Jerry. We reframed it as two binary detectors, using EfficientNet-B3 and ConvNeXt, and reached 0.9444 on the public leaderboard.",
