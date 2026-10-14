@@ -1,4 +1,4 @@
-import { todo, type CaseStudy } from "./case-study";
+import type { CaseStudy } from "./case-study";
 
 export type ProjectTag = "backend" | "fullstack" | "ai" | "devops" | "security";
 
@@ -112,7 +112,7 @@ export const projects: Project[] = [
           "Integration and chaos tests against a real PostgreSQL, run in GitHub Actions CI",
           "Docker Compose setup (database, API, 3 worker replicas) and the Prometheus metrics",
         ],
-        timeframe: todo("when you built it and roughly how long it took"),
+        timeframe: "Built in September 2026, about one week",
       },
       decisions: [
         {
