@@ -326,11 +326,12 @@ export const projects: Project[] = [
     name: "AAAC – Access-Aware Admission Control",
     summary:
       "Fairness-aware virtual waiting room that adapts admission windows and page payloads to each client's link quality.",
-    team: "Team",
+    team: "Mora Vortex",
     role: "Team · estimator, delivery, client SDK",
     tags: ["backend", "ai"],
     stack: ["Python", "FastAPI", "Redis", "LightGBM", "Docker"],
     repo: "https://github.com/Sachintha-dilshan49/AAAC",
+    badge: "1st Runner-Up · ComFix 2026",
     featured: true,
     problem:
       "Ordinary waiting rooms time out users on slow connections first, so the people with the worst links lose their place.",

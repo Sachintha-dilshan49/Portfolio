@@ -39,6 +39,7 @@ test.describe("achievements page", () => {
       await expect(card).toContainText(a.placement);
       await expect(card.getByRole("img")).toHaveCount(a.photos.length);
       if (a.project) await expect(card.getByRole("link", { name: a.project.label })).toHaveAttribute("href", a.project.href);
+      if (a.repo) await expect(card.getByRole("link", { name: a.repo.label })).toHaveAttribute("href", a.repo.href);
     }
     for (const x of extraCurricular) await expect(page.getByRole("heading", { name: x.role })).toBeVisible();
   });
