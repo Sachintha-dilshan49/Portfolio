@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProjectFilter } from "@/components/project-filter";
+import { ProjectCard } from "@/components/project-card";
 import { projects } from "@/content/projects";
 
 export const metadata: Metadata = {
@@ -17,7 +17,11 @@ export default function ProjectsPage() {
           and how it works.
         </p>
       </div>
-      <ProjectFilter projects={projects} />
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
+        {projects.map((p) => (
+          <ProjectCard key={p.slug} project={p} />
+        ))}
+      </div>
     </section>
   );
 }
