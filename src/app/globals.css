@@ -100,6 +100,11 @@ body {
   outline-offset: 3px;
 }
 
+/* ⌘K palette: its header's accent underline is the focus indicator (focus-within). */
+.palette-input:focus-visible {
+  outline: none;
+}
+
 /* ── Dot grid, home page only (components/dot-grid.tsx) ───── */
 .dot-grid {
   position: fixed;
@@ -219,21 +224,35 @@ body {
   animation: blink 1s step-end infinite;
 }
 
-@keyframes line-in {
+/*
+ * Neofetch typing reveal (components/neofetch.tsx): each line is "typed" left
+ * to right by a stepped clip, one after another, ~1s in all. Only visibility is
+ * animated — the text is in the HTML for SEO and no-JS visitors, and with
+ * animation off (reduced motion, print, already played) it is simply shown.
+ */
+@keyframes type-in {
   from {
-    opacity: 0;
-    transform: translateX(-4px);
+    clip-path: inset(0 100% 0 0);
   }
   to {
-    opacity: 1;
-    transform: none;
+    clip-path: inset(0 0 0 0);
   }
 }
 
 .type-line {
-  opacity: 0;
-  animation: line-in 0.18s ease-out forwards;
-  animation-delay: calc(var(--i, 0) * 140ms + 200ms);
+  animation: type-in 110ms steps(14, end) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+}
+
+/* Set once it has played (components/type-once.tsx): coming back to the home page shows it static. */
+[data-typed] .type-line {
+  animation: none;
+}
+
+@media print {
+  .type-line {
+    animation: none;
+  }
 }
 
 /* ── Reveal on scroll (see components/case-study/reveal.tsx) ── */
@@ -283,8 +302,5 @@ body {
   *::after {
     animation: none !important;
     transition: none !important;
-  }
-  .type-line {
-    opacity: 1;
   }
 }

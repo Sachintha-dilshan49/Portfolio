@@ -1018,6 +1018,20 @@ export const projects: Project[] = [
   },
 ];
 
+/**
+ * The few fields the shell and the command palette need. Client components get
+ * this as props, so the full case-study data never ships to the browser.
+ */
+export type ProjectLink = Pick<Project, "slug" | "name" | "team" | "stack" | "tags">;
+
+export const projectLinks: ProjectLink[] = projects.map(({ slug, name, team, stack, tags }) => ({
+  slug,
+  name,
+  team,
+  stack,
+  tags,
+}));
+
 export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug);
 }

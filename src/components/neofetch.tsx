@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { neofetch, profile } from "@/content/profile";
 import { Photo } from "./photo";
 import { Prompt, TerminalWindow } from "./terminal";
+import { TypeOnce } from "./type-once";
 
 const toneClass = { gold: "text-gold", ok: "text-ok" } as const;
 const swatches = ["#ff6b5b", "#3ddc97", "#f5c26b", "#5b8cff", "#c58cff", "#5bd6e6"];
@@ -10,6 +11,7 @@ export function Neofetch() {
   return (
     <TerminalWindow title={`${profile.host}: ~`}>
       <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-7">
+        <TypeOnce />
         <Prompt user={profile.host}>neofetch</Prompt>
         {/* Phones: photo stacked above the info, smaller. md+: side by side. */}
         <div className="flex flex-col items-start gap-6 md:flex-row md:gap-10">

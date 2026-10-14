@@ -2,9 +2,11 @@ import Link from "next/link";
 import { DotGrid } from "@/components/dot-grid";
 import { Neofetch } from "@/components/neofetch";
 import { ProjectCard } from "@/components/project-card";
+import { Shell } from "@/components/shell";
 import { Prompt } from "@/components/terminal";
 import { profile } from "@/content/profile";
-import { projects } from "@/content/projects";
+import { projectLinks, projects } from "@/content/projects";
+import { shell } from "@/content/shell";
 import { wins } from "@/content/timeline";
 
 const btn =
@@ -33,6 +35,14 @@ export default function Home() {
             mail me
           </Link>
         </div>
+      </section>
+
+      <section className="flex flex-col gap-6 border-t border-line py-12" aria-labelledby="shell-heading">
+        <h2 id="shell-heading" className="sr-only">
+          {shell.heading}
+        </h2>
+        <Prompt>{shell.launcher}</Prompt>
+        <Shell projects={projectLinks} />
       </section>
 
       <section className="flex flex-col gap-6 border-t border-line py-12">
